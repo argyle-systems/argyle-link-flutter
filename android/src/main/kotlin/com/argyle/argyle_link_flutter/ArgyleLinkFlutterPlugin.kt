@@ -27,15 +27,13 @@ class ArgyleLinkFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware 
   private var context: Context? = null
   private lateinit var activity: Activity
 
-  /// LinkConfiguration
+  /// Link Configuration Keys
   private val LINK_KEY = "linkKey"
   private val API_HOST = "apiHost"
   private val USER_TOKEN = "userToken"
   private val PD_CONFIG = "pdConfig"
   private val PD_ITEMS_ONLY = "pdItemsOnly"
   private val PD_UPDATE_FLOW = "pdUpdateFlow"
-
-  //private val API_HOST = "https://api-sandbox.argyle.com/v1"
 
   override fun onDetachedFromActivity() {
     TODO("Not yet implemented")
@@ -66,8 +64,8 @@ class ArgyleLinkFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware 
   override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
     when (call.method) {
       "startSdk" -> {
-        startSdk(call.arguments as Map<String, Object>)
-        result.success("Something")
+        startSdk(call.arguments as Map<String, Any>)
+        result.success("")
       }
       "stopSdk" -> {
         close()
@@ -82,16 +80,16 @@ class ArgyleLinkFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware 
     TODO("Not yet implemented")
   }
 
-  private fun startSdk(arguments: Map<String, Object>) {
+  private fun startSdk(linkConfiguration: Map<String, Any>) {
 
     if (context == null) {
       Log.w(TAG, "Activity not attached");
       throw IllegalStateException("Activity not attached");
     }
 
-    val linkKey = arguments[LINK_KEY] as String
-    val apiHost = arguments[API_HOST] as String
-    val userToken = arguments[USER_TOKEN] as String?
+    val linkKey = linkConfiguration[LINK_KEY] as String
+    val apiHost = linkConfiguration[API_HOST] as String
+    val userToken = linkConfiguration[USER_TOKEN] as String?
 
     val argyle = Argyle.instance
 
@@ -113,35 +111,42 @@ class ArgyleLinkFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware 
 
         override fun onAccountCreated(accountId: String, userId: String, linkItemId:String) {
           Log.d(TAG, "onAccountCreated: accountId: $accountId workerId: $userId linkItemId: $linkItemId")
+          channel.invokeMethod("onAccountCreated", mapOf("accountId" to accountId, "userId" to userId, "linkItemId" to linkItemId))
         }
 
         override fun onAccountConnected(accountId: String, userId: String, linkItemId:String) {
           Log.d(TAG, "onAccountConnected: accountId: $accountId workerId: $userId linkItemId: $linkItemId")
+          channel.invokeMethod("onAccountConnected", mapOf("accountId" to accountId, "userId" to userId, "linkItemId" to linkItemId))
         }
 
         override fun onAccountUpdated(accountId: String, userId: String, linkItemId:String) {
           Log.d(TAG, "onAccountUpdated: accountId: $accountId workerId: $userId linkItemId: $linkItemId")
+          channel.invokeMethod("onAccountUpdated", mapOf("accountId" to accountId, "userId" to userId, "linkItemId" to linkItemId))
         }
 
         override fun onAccountRemoved(accountId: String, userId: String, linkItemId:String) {
           Log.d(TAG, "onAccountRemoved: accountId: $accountId workerId: $userId linkItemId: $linkItemId")
+          channel.invokeMethod("onAccountRemoved", mapOf("accountId" to accountId, "userId" to userId, "linkItemId" to linkItemId))
         }
 
         override fun onAccountError(accountId: String, userId: String, linkItemId: String
         ) {
           Log.d(TAG, "onAccountError: accountId: $accountId workerId: $userId linkItemId: $linkItemId")
+          channel.invokeMethod("onAccountError", mapOf("accountId" to accountId, "userId" to userId, "linkItemId" to linkItemId))
         }
 
         override fun onError(error: ArgyleErrorType) {
           Log.d(TAG, "onError: error: $error")
+          channel.invokeMethod("onError", mapOf("error" to error))
         }
 
         override fun onUserCreated(userToken: String, userId: String) {
-
+          channel.invokeMethod("onUserCreated", mapOf("userToken" to userToken, "userId" to userId))
         }
 
         override fun onClose() {
           Log.d(TAG, "onClose")
+          channel.invokeMethod("onClose", null)
         }
 
         override fun onPayDistributionError(

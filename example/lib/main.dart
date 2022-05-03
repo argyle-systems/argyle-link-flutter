@@ -1,8 +1,6 @@
+import 'package:argyle_link_flutter/argyle.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
-
-import 'package:flutter/services.dart';
-import 'package:argyle_link_flutter/argyle_link_flutter.dart';
 
 void main() {
   runApp(const MyApp());
@@ -42,7 +40,11 @@ class _MyAppState extends State<MyApp> {
         body: Center(
           child: ElevatedButton(
             onPressed: (){
-              ArgyleLinkFlutter.startSdk(configuration: createConfig());
+              Argyle.startSdk(configuration: createConfig(),
+                onAccountConnected: (String accountId) {
+                  print("- onAccountConnected: $accountId");
+                }
+              );
             },
             child: const Text("Start Argyle SDK"),
           ),
@@ -54,7 +56,7 @@ class _MyAppState extends State<MyApp> {
 }
 
 createConfig() {
-  return <String, dynamic>{
+  return <String, Object>{
     'linkKey': '017cf0de-aac1-e1c4-b86c-7d9dffbfc8ed',
     'apiHost': 'https://api-sandbox.argyle.com/v1',
   };

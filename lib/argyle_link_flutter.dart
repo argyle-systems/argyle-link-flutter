@@ -10,4 +10,9 @@ class ArgyleLinkFlutter {
     final String? version = await _channel.invokeMethod('getPlatformVersion');
     return version;
   }
+
+  static Future<String?> get startSdk async {
+    final String? version = await _channel.invokeMethod('startSdk');
+    return version;
+  }
 }

@@ -51,11 +51,17 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Plugin example app'),
+          title: const Text('Argyle Flutter App'),
         ),
         body: Center(
-          child: Text('Running on: $_platformVersion\n'),
+          child: ElevatedButton(
+            onPressed: (){
+              ArgyleLinkFlutter.startSdk;
+            },
+            child: const Text("Start Argyle SDK"),
+          ),
         ),
+
       ),
     );
   }

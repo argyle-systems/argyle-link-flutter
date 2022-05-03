@@ -6,13 +6,8 @@ import 'package:flutter/services.dart';
 class ArgyleLinkFlutter {
   static const MethodChannel _channel = MethodChannel('argyle_link_flutter');
 
-  static Future<String?> get platformVersion async {
-    final String? version = await _channel.invokeMethod('getPlatformVersion');
-    return version;
-  }
-
-  static Future<String?> get startSdk async {
-    final String? version = await _channel.invokeMethod('startSdk');
-    return version;
+  /// Initializes the Argyle Link flow on the device.
+  static Future<void> startSdk({required Map<String, dynamic> configuration}) async {
+    await _channel.invokeMethod('startSdk', configuration);
   }
 }

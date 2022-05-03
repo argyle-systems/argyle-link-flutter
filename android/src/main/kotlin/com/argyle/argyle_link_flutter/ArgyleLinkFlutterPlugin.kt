@@ -16,16 +16,26 @@ import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
 
+
 /** ArgyleLinkFlutterPlugin */
 class ArgyleLinkFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
-  /// The MethodChannel that will the communication between Flutter and native Android
-  ///
-  /// This local reference serves to register the plugin with the Flutter Engine and unregister it
-  /// when the Flutter Engine is detached from the Activity
-  private lateinit var channel: MethodChannel
 
-  private lateinit var context: Context
+  private val TAG = "ArgyleLinkFlutterPlugin"
+  private val channelName = "argyle_link_flutter"
+
+  private lateinit var channel: MethodChannel
+  private var context: Context? = null
   private lateinit var activity: Activity
+
+  /// LinkConfiguration
+  private val LINK_KEY = "linkKey"
+  private val API_HOST = "apiHost"
+  private val USER_TOKEN = "userToken"
+  private val PD_CONFIG = "pdConfig"
+  private val PD_ITEMS_ONLY = "pdItemsOnly"
+  private val PD_UPDATE_FLOW = "pdUpdateFlow"
+
+  //private val API_HOST = "https://api-sandbox.argyle.com/v1"
 
   override fun onDetachedFromActivity() {
     TODO("Not yet implemented")
@@ -35,28 +45,32 @@ class ArgyleLinkFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware 
     TODO("Not yet implemented")
   }
 
+  override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
+    channel.setMethodCallHandler(null)
+  }
+
   override fun onAttachedToActivity(binding: ActivityPluginBinding) {
     activity = binding.activity;
   }
 
   override fun onDetachedFromActivityForConfigChanges() {
-    TODO("Not yet implemented")
+    this.channel.setMethodCallHandler(null)
   }
 
   override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
-    channel = MethodChannel(flutterPluginBinding.binaryMessenger, "argyle_link_flutter")
+    channel = MethodChannel(flutterPluginBinding.binaryMessenger, channelName)
     channel.setMethodCallHandler(this)
     context = flutterPluginBinding.applicationContext
   }
 
   override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
     when (call.method) {
-      "getPlatformVersion" -> {
-        result.success("Android ${android.os.Build.VERSION.RELEASE}")
-      }
       "startSdk" -> {
-        configureArgyleSdk()
+        startSdk(call.arguments as Map<String, Object>)
         result.success("Something")
+      }
+      "stopSdk" -> {
+        close()
       }
       else -> {
         result.notImplemented()
@@ -64,17 +78,28 @@ class ArgyleLinkFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware 
     }
   }
 
-  private val LINK_KEY = "017cf0de-aac1-e1c4-b86c-7d9dffbfc8ed"
-  private val API_HOST = "https://api-sandbox.argyle.com/v1"
+  private fun close() {
+    TODO("Not yet implemented")
+  }
 
-  private fun configureArgyleSdk(token: String? = null) {
+  private fun startSdk(arguments: Map<String, Object>) {
+
+    if (context == null) {
+      Log.w(TAG, "Activity not attached");
+      throw IllegalStateException("Activity not attached");
+    }
+
+    val linkKey = arguments[LINK_KEY] as String
+    val apiHost = arguments[API_HOST] as String
+    val userToken = arguments[USER_TOKEN] as String?
+
     val argyle = Argyle.instance
 
-    Log.d(TAG, "openSdk with token : $token")
+    Log.d(TAG, "openSdk with user token : $userToken")
 
     val config = ArgyleConfig.Builder()
 
-      .loginWith(LINK_KEY, API_HOST, token)
+      .loginWith(linkKey, apiHost, userToken)
 //            .linkItems(arrayOf("uber"))
 //            .payDistributionConfig(YOUR_PD_CONFIG)
 //            .payDistributionItemsOnly(true)
@@ -150,11 +175,5 @@ class ArgyleLinkFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware 
 
     argyle.init(config)
     argyle.startSDK(activity)
-  }
-
-  private val TAG = "MainActivity"
-
-  override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
-    channel.setMethodCallHandler(null)
   }
 }

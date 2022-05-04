@@ -133,5 +133,10 @@ createConfig() {
   return <String, Object>{
     'linkKey': '017cf0de-aac1-e1c4-b86c-7d9dffbfc8ed',
     'apiHost': 'https://api-sandbox.argyle.com/v1',
+    // 'linkItemIds' : ['kroger', 'uber'],
+    // 'customisationId' : 'CREATE A CUSTOMISATION IN CONSOLE',
+    // 'pdItemsOnly' : false,
+    // 'showCantFindLinkItemAtTop' : false
+    // 'pdConfig' : 'CiQAzxhtksWbq3TC1dk2vtVoIqfEde6PCGZLDIYl5EQZ3pCg0DsSjwIAW+ch9KNmUO1gHRbXaBmQmzQ8Q84wJQxX6xw/i3WYQXD+2EbuO1WDwfPjvUdgYiP0GivM5tBSn7rlQvAzM5MDQXYDGK/aKtL3kUmPdQelZjq9zBt95WGcOgN6s5MAc61Ghbuf6Iwro8F94+2gOtH13PaSwIIO6OAUHjLP3ksZzwsJAcpfGctAJPk2Vbrje8vhHaeVTx4lpBoyk56g1sjf/26NnzqywTQEhO3LCYH2cClZCppxIa9PMTN/oHKWSuvcTffCbWfZQAsnIcSLmIlBSw1SsRAa3Av4SE29fjsUhkhPzNYGzi3icyFw404tqyEZ/95Iikp2Khha7GOLDnsiA0ufyRNwWhQJFMJLX211'
   };
 }

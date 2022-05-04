@@ -33,4 +33,8 @@ abstract class ArgyleLinkInterface extends PlatformInterface {
   }) async {
     throw UnimplementedError('startSdk() has not been implemented.');
   }
+
+  Future<void> close() async {
+    throw UnimplementedError('close() has not been implemented.');
+  }
 }

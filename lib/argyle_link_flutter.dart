@@ -1,4 +1,3 @@
-
 import 'dart:async';
 
 import 'package:argyle_link_flutter/argyle_link_interface.dart';
@@ -13,6 +12,11 @@ class ArgyleLinkFlutter extends ArgyleLinkInterface {
     _channel.setMethodCallHandler(_onMethodCall);
   }
 
+  @override
+  Future<void> close() async {
+    await _channel.invokeMethod('close');
+  }
+
   /// Initializes the Argyle Link flow on the device.
   @override
   Future<void> startSdk({required Map<String, dynamic> configuration}) async {
@@ -22,66 +26,46 @@ class ArgyleLinkFlutter extends ArgyleLinkInterface {
   Future<dynamic> _onMethodCall(MethodCall call) async {
     switch (call.method) {
       case 'onAccountCreated':
-        final accountId = call.arguments['accountId'];
-        final userId = call.arguments['userId'];
-        final linkItemId = call.arguments['linkItemId'];
-        onAccountCreated?.call(accountId, userId, linkItemId);
+        onAccountCreated?.call(getAccountIdArgument(call),
+            getUseIdArgument(call), getLinkItemIdArgument(call));
         break;
       case 'onAccountConnected':
-        final accountId = call.arguments['accountId'];
-        final userId = call.arguments['userId'];
-        final linkItemId = call.arguments['linkItemId'];
-        onAccountConnected?.call(accountId, userId, linkItemId);
+        onAccountConnected?.call(getAccountIdArgument(call),
+            getUseIdArgument(call), getLinkItemIdArgument(call));
         break;
       case 'onAccountUpdated':
-        final accountId = call.arguments['accountId'];
-        final userId = call.arguments['userId'];
-        final linkItemId = call.arguments['linkItemId'];
-        onAccountUpdated?.call(accountId, userId, linkItemId);
+        onAccountUpdated?.call(getAccountIdArgument(call),
+            getUseIdArgument(call), getLinkItemIdArgument(call));
         break;
       case 'onAccountRemoved':
-        final accountId = call.arguments['accountId'];
-        final userId = call.arguments['userId'];
-        final linkItemId = call.arguments['linkItemId'];
-        onAccountRemoved?.call(accountId, userId, linkItemId);
+        onAccountRemoved?.call(getAccountIdArgument(call),
+            getUseIdArgument(call), getLinkItemIdArgument(call));
         break;
       case 'onAccountError':
-        final accountId = call.arguments['accountId'];
-        final userId = call.arguments['userId'];
-        final linkItemId = call.arguments['linkItemId'];
-        onAccountError?.call(accountId, userId, linkItemId);
+        onAccountError?.call(getAccountIdArgument(call), getUseIdArgument(call),
+            getLinkItemIdArgument(call));
         break;
       case 'onError':
-        final accountId = call.arguments['accountId'];
-        final userId = call.arguments['userId'];
-        final linkItemId = call.arguments['linkItemId'];
-        onError?.call(accountId, userId, linkItemId);
+        onError?.call(getAccountIdArgument(call), getUseIdArgument(call),
+            getLinkItemIdArgument(call));
         break;
       case 'onUserCreated':
-        final userToken = call.arguments['userToken'];
-        final userId = call.arguments['userId'];
-        onUserCreated?.call(userToken, userId);
+        onUserCreated?.call(getUserTokenArgument(call), getUseIdArgument(call));
         break;
       case 'onClose':
         onClose?.call();
         break;
       case 'onPayDistributionError':
-        final accountId = call.arguments['accountId'];
-        final userId = call.arguments['userId'];
-        final linkItemId = call.arguments['linkItemId'];
-        onPayDistributionError?.call(accountId, userId, linkItemId);
+        onPayDistributionError?.call(getAccountIdArgument(call),
+            getUseIdArgument(call), getLinkItemIdArgument(call));
         break;
       case 'onPayDistributionSuccess':
-        final accountId = call.arguments['accountId'];
-        final userId = call.arguments['userId'];
-        final linkItemId = call.arguments['linkItemId'];
-        onPayDistributionSuccess?.call(accountId, userId, linkItemId);
+        onPayDistributionSuccess?.call(getAccountIdArgument(call),
+            getUseIdArgument(call), getLinkItemIdArgument(call));
         break;
       case 'onUIEvent':
-        final name = call.arguments['name'];
-        final properties = call.arguments['properties'];
-        final userdata = Map<String, Object>.from(properties);
-        onUIEvent?.call(name, userdata);
+        onUIEvent?.call(
+            getEventNameArgument(call), getEventPropertiesArgument(call));
         break;
 
       default:
@@ -89,4 +73,15 @@ class ArgyleLinkFlutter extends ArgyleLinkInterface {
             '${call.method} was invoked but has no handler');
     }
   }
+
+  Map<String, Object> getEventPropertiesArgument(MethodCall call) {
+    final userdata = Map<String, Object>.from(call.arguments['properties']);
+    return userdata;
+  }
+
+  getEventNameArgument(MethodCall call) => call.arguments['name'];
+  getUserTokenArgument(MethodCall call) => call.arguments['userToken'];
+  getLinkItemIdArgument(MethodCall call) => call.arguments['linkItemId'];
+  getUseIdArgument(MethodCall call) => call.arguments['userId'];
+  getAccountIdArgument(MethodCall call) => call.arguments['accountId'];
 }

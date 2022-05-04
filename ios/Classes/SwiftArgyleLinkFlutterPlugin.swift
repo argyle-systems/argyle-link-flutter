@@ -1,5 +1,6 @@
 import Flutter
 import UIKit
+import ArgyleLink
 
 public class SwiftArgyleLinkFlutterPlugin: NSObject, FlutterPlugin {
   public static func register(with registrar: FlutterPluginRegistrar) {
@@ -9,6 +10,13 @@ public class SwiftArgyleLinkFlutterPlugin: NSObject, FlutterPlugin {
   }
 
   public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
-    result("iOS " + UIDevice.current.systemVersion)
+    if (call.method == "startSdk") {
+        let flutterController = UIApplication.shared.delegate!.window!!.rootViewController!
+        let controller = Argyle.shared.controller
+        // read call arguments and setup SDK
+        controller.modalPresentationStyle = .fullScreen
+        flutterController.present(controller, animated: true, completion: nil)
+        result("")
+    }
   }
 }

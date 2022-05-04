@@ -6,7 +6,18 @@ class Argyle {
 
   /// Present the Argyle Link SDK
   ///   - [configuration] Configuration of the Argyle Link SDK.
-  ///   - [onAccountConnected] Closure that will be called when a Link connects an account
+  ///   - [onAccountConnected] Closure that will be called when a user connects their account via Link
+  ///   - [onAccountCreated] Closure that will be called when a user creates their account via Link
+  ///   - [onAccountUpdated] Closure that will be called when a user updates their account via Link
+  ///   - [onAccountRemoved] Closure that will be called when a user removes their account via Link
+  ///   - [onAccountError] Closure that will be called when an account error is raised via Link
+  ///   - [onError] Closure that will be called when the user experiences any Link error
+  ///   - [onUserCreated] Closure that will be called when a User entity is created via Link
+  ///   - [onClose] Closure that will be called just before Link closes
+  ///   - [onPayDistributionError] Closure that will be called when a user experiences a PD error
+  ///   - [onPayDistributionSuccess] Closure that will be called when a user successfully completes a PD operation
+  ///   - [onUIEvent] Closure that will be called for any UI interaction
+  ///   - [onTokenExpired] Closure that will be called if the users Link token expires
   static Future<void> startSdk({
     required Map<String, Object> configuration,
     Function? onAccountConnected,

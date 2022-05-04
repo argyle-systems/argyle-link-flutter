@@ -88,8 +88,7 @@ class _MyAppState extends State<MyApp> {
                           " " +
                           linkItemId);
                     },
-                    onClose:
-                        (String accountId, String userId, String linkItemId) {
+                    onClose: () {
                       addSdkCallbackEventToList("onClose");
                     },
                     onUserCreated: (String userToken, String userId) {
@@ -120,7 +119,7 @@ class _MyAppState extends State<MyApp> {
                     },
                     onUIEvent: (String name, Map<String, Object> properties) {
                       addSdkCallbackEventToList(
-                          "onUIEvent " + properties.toString());
+                          "onUIEvent " + name + " " + properties.toString());
                     });
               },
               child: const Text('Start Argyle SDK'))

@@ -1,3 +1,4 @@
+
 import 'package:argyle_link_flutter/argyle.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
@@ -14,6 +15,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  final List<String> sdkCallbackEvents = <String>[];
 
   @override
   void initState() {
@@ -21,13 +23,14 @@ class _MyAppState extends State<MyApp> {
     initPlatformState();
   }
 
-  // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> initPlatformState() async {
-
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
     if (!mounted) return;
+  }
+
+  void addSdkCallbackEventToList(String eventDetails) {
+    setState(() {
+      sdkCallbackEvents.add(eventDetails);
+    });
   }
 
   @override
@@ -37,19 +40,91 @@ class _MyAppState extends State<MyApp> {
         appBar: AppBar(
           title: const Text('Argyle Flutter App'),
         ),
-        body: Center(
-          child: ElevatedButton(
-            onPressed: (){
-              Argyle.startSdk(configuration: createConfig(),
-                onAccountConnected: (String accountId) {
-                  print("- onAccountConnected: $accountId");
-                }
-              );
-            },
-            child: const Text("Start Argyle SDK"),
-          ),
-        ),
-
+        body: Column(children: <Widget>[
+          Expanded(
+              child: ListView.builder(
+                  padding: const EdgeInsets.all(8),
+                  itemCount: sdkCallbackEvents.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Container(
+                      height: 100,
+                      margin: const EdgeInsets.all(2),
+                      color: Colors.blue[400],
+                      child: Center(
+                          child: Text(
+                        sdkCallbackEvents[index],
+                        style: const TextStyle(fontSize: 18),
+                      )),
+                    );
+                  })),
+          ElevatedButton(
+              onPressed: () {
+                Argyle.startSdk(
+                    configuration: createConfig(),
+                    onAccountConnected:
+                        (String accountId, String userId, String linkItemId) {
+                      addSdkCallbackEventToList("onAccountConnected " +
+                          accountId +
+                          " " +
+                          userId +
+                          " " +
+                          linkItemId);
+                    },
+                    onAccountCreated:
+                        (String accountId, String userId, String linkItemId) {
+                      addSdkCallbackEventToList("onAccountCreated " +
+                          accountId +
+                          " " +
+                          userId +
+                          " " +
+                          linkItemId);
+                    },
+                    onAccountError:
+                        (String accountId, String userId, String linkItemId) {
+                      addSdkCallbackEventToList("onAccountError " +
+                          accountId +
+                          " " +
+                          userId +
+                          " " +
+                          linkItemId);
+                    },
+                    onClose:
+                        (String accountId, String userId, String linkItemId) {
+                      addSdkCallbackEventToList("onClose");
+                    },
+                    onUserCreated: (String userToken, String userId) {
+                      addSdkCallbackEventToList(
+                          "onUserCreated " + userToken + " " + userId);
+                    },
+                    onError:
+                        (String accountId, String userId, String linkItemId) {
+                      addSdkCallbackEventToList("onError");
+                    },
+                    onPayDistributionError:
+                        (String accountId, String userId, String linkItemId) {
+                      addSdkCallbackEventToList("onPayDistributionError " +
+                          accountId +
+                          " " +
+                          userId +
+                          " " +
+                          linkItemId);
+                    },
+                    onPayDistributionSuccess:
+                        (String accountId, String userId, String linkItemId) {
+                      addSdkCallbackEventToList("onPayDistributionSuccess " +
+                          accountId +
+                          " " +
+                          userId +
+                          " " +
+                          linkItemId);
+                    },
+                    onUIEvent: (String name, Map<String, Object> properties) {
+                      addSdkCallbackEventToList(
+                          "onUIEvent " + properties.toString());
+                    });
+              },
+              child: const Text('Start Argyle SDK'))
+        ]),
       ),
     );
   }

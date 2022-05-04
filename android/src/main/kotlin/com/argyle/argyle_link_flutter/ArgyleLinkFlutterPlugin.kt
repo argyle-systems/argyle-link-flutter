@@ -110,28 +110,28 @@ class ArgyleLinkFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware 
         }
 
         override fun onAccountCreated(accountId: String, userId: String, linkItemId:String) {
-          Log.d(TAG, "onAccountCreated: accountId: $accountId workerId: $userId linkItemId: $linkItemId")
+          Log.d(TAG, "onAccountCreated: accountId: $accountId userId: $userId linkItemId: $linkItemId")
           channel.invokeMethod("onAccountCreated", mapOf("accountId" to accountId, "userId" to userId, "linkItemId" to linkItemId))
         }
 
         override fun onAccountConnected(accountId: String, userId: String, linkItemId:String) {
-          Log.d(TAG, "onAccountConnected: accountId: $accountId workerId: $userId linkItemId: $linkItemId")
+          Log.d(TAG, "onAccountConnected: accountId: $accountId userId: $userId linkItemId: $linkItemId")
           channel.invokeMethod("onAccountConnected", mapOf("accountId" to accountId, "userId" to userId, "linkItemId" to linkItemId))
         }
 
         override fun onAccountUpdated(accountId: String, userId: String, linkItemId:String) {
-          Log.d(TAG, "onAccountUpdated: accountId: $accountId workerId: $userId linkItemId: $linkItemId")
+          Log.d(TAG, "onAccountUpdated: accountId: $accountId userId: $userId linkItemId: $linkItemId")
           channel.invokeMethod("onAccountUpdated", mapOf("accountId" to accountId, "userId" to userId, "linkItemId" to linkItemId))
         }
 
         override fun onAccountRemoved(accountId: String, userId: String, linkItemId:String) {
-          Log.d(TAG, "onAccountRemoved: accountId: $accountId workerId: $userId linkItemId: $linkItemId")
+          Log.d(TAG, "onAccountRemoved: accountId: $accountId userId: $userId linkItemId: $linkItemId")
           channel.invokeMethod("onAccountRemoved", mapOf("accountId" to accountId, "userId" to userId, "linkItemId" to linkItemId))
         }
 
         override fun onAccountError(accountId: String, userId: String, linkItemId: String
         ) {
-          Log.d(TAG, "onAccountError: accountId: $accountId workerId: $userId linkItemId: $linkItemId")
+          Log.d(TAG, "onAccountError: accountId: $accountId userId: $userId linkItemId: $linkItemId")
           channel.invokeMethod("onAccountError", mapOf("accountId" to accountId, "userId" to userId, "linkItemId" to linkItemId))
         }
 
@@ -158,6 +158,7 @@ class ArgyleLinkFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware 
             TAG,
             "onPayDistributionError: accountId: $accountId userId: $userId linkItemId: $linkItemId"
           )
+          channel.invokeMethod("onPayDistributionError", mapOf("accountId" to accountId, "userId" to userId, "linkItemId" to linkItemId))
         }
 
         override fun onPayDistributionSuccess(
@@ -169,10 +170,12 @@ class ArgyleLinkFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware 
             TAG,
             "onPayDistributionSuccess: accountId: $accountId userId: $userId linkItemId: $linkItemId"
           )
+          channel.invokeMethod("onPayDistributionSuccess", mapOf("accountId" to accountId, "userId" to userId, "linkItemId" to linkItemId))
         }
 
         override fun onUIEvent(name: String, properties: Map<String, Any>) {
           Log.d(TAG, "onUIEvent: $name, properties: $properties")
+          channel.invokeMethod("onUIEvent", mapOf("name" to name, "properties" to properties))
         }
 
       })

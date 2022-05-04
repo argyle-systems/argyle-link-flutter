@@ -15,8 +15,18 @@ abstract class ArgyleLinkInterface extends PlatformInterface {
     _instance = instance;
   }
 
-  /// Closure that will be called when a Link Interaction event occurs
   Function? onAccountConnected;
+  Function? onAccountCreated;
+  Function? onAccountUpdated;
+  Function? onAccountRemoved;
+  Function? onAccountError;
+  Function? onError;
+  Function? onUserCreated;
+  Function? onClose;
+  Function? onPayDistributionError;
+  Function? onPayDistributionSuccess;
+  Function? onUIEvent;
+  Function? onTokenExpired;
 
   Future<void> startSdk({
     required Map<String, dynamic> configuration,

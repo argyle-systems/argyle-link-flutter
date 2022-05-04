@@ -21,9 +21,67 @@ class ArgyleLinkFlutter extends ArgyleLinkInterface {
 
   Future<dynamic> _onMethodCall(MethodCall call) async {
     switch (call.method) {
+      case 'onAccountCreated':
+        final accountId = call.arguments['accountId'];
+        final userId = call.arguments['userId'];
+        final linkItemId = call.arguments['linkItemId'];
+        onAccountCreated?.call(accountId, userId, linkItemId);
+        break;
       case 'onAccountConnected':
         final accountId = call.arguments['accountId'];
-        onAccountConnected?.call(accountId);
+        final userId = call.arguments['userId'];
+        final linkItemId = call.arguments['linkItemId'];
+        onAccountConnected?.call(accountId, userId, linkItemId);
+        break;
+      case 'onAccountUpdated':
+        final accountId = call.arguments['accountId'];
+        final userId = call.arguments['userId'];
+        final linkItemId = call.arguments['linkItemId'];
+        onAccountUpdated?.call(accountId, userId, linkItemId);
+        break;
+      case 'onAccountRemoved':
+        final accountId = call.arguments['accountId'];
+        final userId = call.arguments['userId'];
+        final linkItemId = call.arguments['linkItemId'];
+        onAccountRemoved?.call(accountId, userId, linkItemId);
+        break;
+      case 'onAccountError':
+        final accountId = call.arguments['accountId'];
+        final userId = call.arguments['userId'];
+        final linkItemId = call.arguments['linkItemId'];
+        onAccountError?.call(accountId, userId, linkItemId);
+        break;
+      case 'onError':
+        final accountId = call.arguments['accountId'];
+        final userId = call.arguments['userId'];
+        final linkItemId = call.arguments['linkItemId'];
+        onError?.call(accountId, userId, linkItemId);
+        break;
+      case 'onUserCreated':
+        final userToken = call.arguments['userToken'];
+        final userId = call.arguments['userId'];
+        onUserCreated?.call(userToken, userId);
+        break;
+      case 'onClose':
+        onClose?.call();
+        break;
+      case 'onPayDistributionError':
+        final accountId = call.arguments['accountId'];
+        final userId = call.arguments['userId'];
+        final linkItemId = call.arguments['linkItemId'];
+        onPayDistributionError?.call(accountId, userId, linkItemId);
+        break;
+      case 'onPayDistributionSuccess':
+        final accountId = call.arguments['accountId'];
+        final userId = call.arguments['userId'];
+        final linkItemId = call.arguments['linkItemId'];
+        onPayDistributionSuccess?.call(accountId, userId, linkItemId);
+        break;
+      case 'onUIEvent':
+        final name = call.arguments['name'];
+        final properties = call.arguments['properties'];
+        final userdata = Map<String, Object>.from(properties);
+        onUIEvent?.call(name, userdata);
         break;
 
       default:

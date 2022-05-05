@@ -1,4 +1,3 @@
-
 import 'package:argyle_link_flutter/argyle.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
@@ -15,7 +14,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final List<String> sdkCallbackEvents = <String>[];
+  final Map<String, String> sdkCallbackEvents = {};
 
   @override
   void initState() {
@@ -27,9 +26,15 @@ class _MyAppState extends State<MyApp> {
     if (!mounted) return;
   }
 
-  void addSdkCallbackEventToList(String eventDetails) {
+  void addSdkCallbackEventToList(String eventName, [String eventParams = ""]) {
     setState(() {
-      sdkCallbackEvents.add(eventDetails);
+      sdkCallbackEvents[eventName] =  eventParams;
+    });
+  }
+
+  void clearCallbackList() {
+    setState(() {
+      sdkCallbackEvents.clear();
     });
   }
 
@@ -41,102 +46,126 @@ class _MyAppState extends State<MyApp> {
           title: const Text('Argyle Flutter App'),
         ),
         body: Column(children: <Widget>[
+          const SizedBox(height: 10),
+          const Text(
+              "Callback Log",
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)
+          ),
           Expanded(
               child: ListView.builder(
                   padding: const EdgeInsets.all(8),
                   itemCount: sdkCallbackEvents.length,
                   itemBuilder: (BuildContext context, int index) {
+                    String key = sdkCallbackEvents.keys.elementAt(index);
+
                     return Container(
-                      height: 100,
-                      margin: const EdgeInsets.all(2),
-                      color: Colors.blue[400],
-                      child: Center(
-                          child: Text(
-                        sdkCallbackEvents[index],
-                        style: const TextStyle(fontSize: 18),
-                      )),
+                        padding: const EdgeInsets.all(8),
+                        margin: const EdgeInsets.all(2),
+                        color: Colors.grey[400],
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                                "Callback: $key",
+                                style: const TextStyle(fontSize: 20, color: Colors.black45, fontWeight: FontWeight.bold)
+                            ),
+                            const SizedBox(height: 10),
+                            const Text(
+                                "Params:",
+                                style: TextStyle(fontSize: 18)
+                            ),
+                            Text(
+                                "${sdkCallbackEvents[key]}",
+                                style: const TextStyle(fontSize: 14, color: Colors.black45)
+                            )
+                          ],
+                        )
                     );
                   })),
           ElevatedButton(
               onPressed: () {
-                Argyle.startSdk(
-                    configuration: createConfig(),
-                    onAccountConnected:
-                        (String accountId, String userId, String linkItemId) {
-                      addSdkCallbackEventToList("onAccountConnected " +
-                          accountId +
-                          " " +
-                          userId +
-                          " " +
-                          linkItemId);
-                    },
-                    onAccountCreated:
-                        (String accountId, String userId, String linkItemId) {
-                      addSdkCallbackEventToList("onAccountCreated " +
-                          accountId +
-                          " " +
-                          userId +
-                          " " +
-                          linkItemId);
-                    },
-                    onAccountError:
-                        (String accountId, String userId, String linkItemId) {
-                      addSdkCallbackEventToList("onAccountError " +
-                          accountId +
-                          " " +
-                          userId +
-                          " " +
-                          linkItemId);
-                    },
-                    onClose: () {
-                      addSdkCallbackEventToList("onClose");
-                    },
-                    onUserCreated: (String userToken, String userId) {
-                      addSdkCallbackEventToList(
-                          "onUserCreated " + userToken + " " + userId);
-                    },
-                    onError:
-                        (String accountId, String userId, String linkItemId) {
-                      addSdkCallbackEventToList("onError");
-                    },
-                    onPayDistributionError:
-                        (String accountId, String userId, String linkItemId) {
-                      addSdkCallbackEventToList("onPayDistributionError " +
-                          accountId +
-                          " " +
-                          userId +
-                          " " +
-                          linkItemId);
-                    },
-                    onPayDistributionSuccess:
-                        (String accountId, String userId, String linkItemId) {
-                      addSdkCallbackEventToList("onPayDistributionSuccess " +
-                          accountId +
-                          " " +
-                          userId +
-                          " " +
-                          linkItemId);
-                    },
-                    onUIEvent: (String name, Map<String, Object> properties) {
-                      addSdkCallbackEventToList(
-                          "onUIEvent " + name + " " + properties.toString());
-                    });
+                clearCallbackList();
+                startArgyleSdk();
               },
               child: const Text('Start Argyle SDK'))
         ]),
       ),
     );
   }
+
+  void startArgyleSdk() {
+    Argyle.startSdk(
+        configuration: createConfig(),
+        onAccountConnected: onAccountConnectedHandler,
+        onAccountCreated: onAccountCreatedHandler,
+        onAccountRemoved: onAccountRemovedHandler,
+        onAccountUpdated: onAccountUpdatedHandler,
+        onAccountError: onAccountErrorHandler,
+        onClose: () {
+          addSdkCallbackEventToList("onClose");
+        },
+        onUserCreated: onUserCreatedHandler,
+        onError: onErrorHandler,
+        onPayDistributionError: onPayDistributionErrorHandler,
+        onPayDistributionSuccess: onPayDistributionSuccessHandler,
+        onUIEvent: onUiEventHandler);
+  }
+
+  onUiEventHandler(String name, Map<String, Object> properties) {
+    addSdkCallbackEventToList(
+        "onUIEvent", name + " " + properties.toString());
+  }
+
+  onPayDistributionSuccessHandler(String accountId, String userId, String linkItemId) {
+    addSdkCallbackEventToList("onPayDistributionSuccess", getFormattedParams(accountId, userId, linkItemId));
+  }
+
+  onPayDistributionErrorHandler(String accountId, String userId, String linkItemId) {
+    addSdkCallbackEventToList("onPayDistributionError", getFormattedParams(accountId, userId, linkItemId));
+  }
+
+  onErrorHandler(String errorCode) {
+    addSdkCallbackEventToList("onError", "ErrorCode: $errorCode");
+  }
+
+  onUserCreatedHandler(String userToken, String userId) {
+    addSdkCallbackEventToList(
+        "onUserCreated", "UserToken: $userToken \nUserId: $userId");
+  }
+
+  onAccountErrorHandler(String accountId, String userId, String linkItemId) {
+    addSdkCallbackEventToList("onAccountError", getFormattedParams(accountId, userId, linkItemId));
+  }
+
+  onAccountCreatedHandler(String accountId, String userId, String linkItemId) {
+    addSdkCallbackEventToList("onAccountCreated", getFormattedParams(accountId, userId, linkItemId));
+  }
+
+  onAccountConnectedHandler(String accountId, String userId, String linkItemId) {
+    addSdkCallbackEventToList("onAccountConnected", getFormattedParams(accountId, userId, linkItemId));
+  }
+
+  onAccountRemovedHandler(String accountId, String userId, String linkItemId) {
+    addSdkCallbackEventToList("onAccountRemoved", getFormattedParams(accountId, userId, linkItemId));
+  }
+
+  onAccountUpdatedHandler(String accountId, String userId, String linkItemId) {
+    addSdkCallbackEventToList("onAccountUpdated", getFormattedParams(accountId, userId, linkItemId));
+  }
+}
+
+getFormattedParams(String accountId, String userId, String linkItemId) {
+  return "AccountID: $accountId \nUserId: $userId \nLinkItemId: $linkItemId";
 }
 
 createConfig() {
   return <String, Object>{
-    'linkKey': '017cf0de-aac1-e1c4-b86c-7d9dffbfc8ed',
-    'apiHost': 'https://api-sandbox.argyle.com/v1',
-    // 'linkItemIds' : ['kroger', 'uber'],
+    'linkKey': '018022b6-3f88-3907-341e-94447f8141d1',
+    'apiHost': 'https://api-sandbox.develop.argyle.io/v1/',
+     'linkItemIds' : ['kroger', 'uber'],
     // 'customisationId' : 'CREATE A CUSTOMISATION IN CONSOLE',
     // 'pdItemsOnly' : false,
     // 'showCantFindLinkItemAtTop' : false
-    // 'pdConfig' : 'CiQAzxhtksWbq3TC1dk2vtVoIqfEde6PCGZLDIYl5EQZ3pCg0DsSjwIAW+ch9KNmUO1gHRbXaBmQmzQ8Q84wJQxX6xw/i3WYQXD+2EbuO1WDwfPjvUdgYiP0GivM5tBSn7rlQvAzM5MDQXYDGK/aKtL3kUmPdQelZjq9zBt95WGcOgN6s5MAc61Ghbuf6Iwro8F94+2gOtH13PaSwIIO6OAUHjLP3ksZzwsJAcpfGctAJPk2Vbrje8vhHaeVTx4lpBoyk56g1sjf/26NnzqywTQEhO3LCYH2cClZCppxIa9PMTN/oHKWSuvcTffCbWfZQAsnIcSLmIlBSw1SsRAa3Av4SE29fjsUhkhPzNYGzi3icyFw404tqyEZ/95Iikp2Khha7GOLDnsiA0ufyRNwWhQJFMJLX211'
+    // 'pdConfig' : 'CiQAzxhtktpPeu3esWpJA7+Ka8ru9jJCzZ04ZH/HxGX7G2X6wwUSjwIAW+ch9IEKQpwr20FhPEtN/z261Lh2PqN4NpO9t3FeYWA7iKBUmQwoE9TOqz3UErv43uK+5BqluRw2ZYpviPEMZilCVOi1Mg3cwLFNkVypkJ+++z1/I4Mb7mZSheosaCrBQv7cfkvJoFsiC9mS0VXC0Uj1Wqwr+GsNC5qf8JE5ZYi1RBHTteNWL27625YiUSPROVtiSeS87r1amXx0dHb/e2SvQ1nG4V2pcsOKeh+262ySbWUsHBqIN/60LODMtu4C4UXI5GhqfvGTj9fbPnF1qwIpCqFEcsBPrFDKtOoXJBeIuWupT3gOA2sbY+iypua2BtgSUqprSu7GMJwrP1Apk8aYm1WtXwhXAJYH7ve6'
   };
 }

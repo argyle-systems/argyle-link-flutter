@@ -197,7 +197,7 @@ class ArgyleLinkFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware 
 
             override fun onError(error: ArgyleErrorType) {
                 Log.d(TAG, "onError: error: $error")
-                channel.invokeMethod("onError", mapOf("error" to error))
+                channel.invokeMethod("onError", mapOf("error" to error.toString()))
             }
 
             override fun onUserCreated(userToken: String, userId: String) {

@@ -101,14 +101,14 @@ class _MyAppState extends State<MyApp> {
         onAccountRemoved: onAccountRemovedHandler,
         onAccountUpdated: onAccountUpdatedHandler,
         onAccountError: onAccountErrorHandler,
-        onClose: () {
-          addSdkCallbackEventToList("onClose");
-        },
         onUserCreated: onUserCreatedHandler,
-        onError: onErrorHandler,
         onPayDistributionError: onPayDistributionErrorHandler,
         onPayDistributionSuccess: onPayDistributionSuccessHandler,
-        onUIEvent: onUiEventHandler);
+        onUIEvent: onUiEventHandler,
+        onError: onErrorHandler,
+        onClose: () {
+          addSdkCallbackEventToList("onClose");
+        });
   }
 
   onUiEventHandler(String name, Map<String, Object> properties) {

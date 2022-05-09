@@ -162,10 +162,10 @@ createConfig() {
   return <String, Object>{
     'linkKey': '018022b6-3f88-3907-341e-94447f8141d1',
     'apiHost': 'https://api-sandbox.develop.argyle.io/v1/',
-     'linkItemIds' : ['kroger', 'uber'],
-    // 'customisationId' : 'CREATE A CUSTOMISATION IN CONSOLE',
-    // 'pdItemsOnly' : false,
+    'linkItems' : ['kroger', 'uber'],
+    // 'customizationId' : 'CREATE A CUSTOMISATION IN CONSOLE',
+    // 'payDistributionItemsOnly' : false,
     // 'showCantFindLinkItemAtTop' : false
-    // 'pdConfig' : 'CiQAzxhtktpPeu3esWpJA7+Ka8ru9jJCzZ04ZH/HxGX7G2X6wwUSjwIAW+ch9IEKQpwr20FhPEtN/z261Lh2PqN4NpO9t3FeYWA7iKBUmQwoE9TOqz3UErv43uK+5BqluRw2ZYpviPEMZilCVOi1Mg3cwLFNkVypkJ+++z1/I4Mb7mZSheosaCrBQv7cfkvJoFsiC9mS0VXC0Uj1Wqwr+GsNC5qf8JE5ZYi1RBHTteNWL27625YiUSPROVtiSeS87r1amXx0dHb/e2SvQ1nG4V2pcsOKeh+262ySbWUsHBqIN/60LODMtu4C4UXI5GhqfvGTj9fbPnF1qwIpCqFEcsBPrFDKtOoXJBeIuWupT3gOA2sbY+iypua2BtgSUqprSu7GMJwrP1Apk8aYm1WtXwhXAJYH7ve6'
+    // 'payDistributionConfig' : 'CiQAzxhtktpPeu3esWpJA7+Ka8ru9jJCzZ04ZH/HxGX7G2X6wwUSjwIAW+ch9IEKQpwr20FhPEtN/z261Lh2PqN4NpO9t3FeYWA7iKBUmQwoE9TOqz3UErv43uK+5BqluRw2ZYpviPEMZilCVOi1Mg3cwLFNkVypkJ+++z1/I4Mb7mZSheosaCrBQv7cfkvJoFsiC9mS0VXC0Uj1Wqwr+GsNC5qf8JE5ZYi1RBHTteNWL27625YiUSPROVtiSeS87r1amXx0dHb/e2SvQ1nG4V2pcsOKeh+262ySbWUsHBqIN/60LODMtu4C4UXI5GhqfvGTj9fbPnF1qwIpCqFEcsBPrFDKtOoXJBeIuWupT3gOA2sbY+iypua2BtgSUqprSu7GMJwrP1Apk8aYm1WtXwhXAJYH7ve6'
   };
 }

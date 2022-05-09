@@ -35,3 +35,11 @@ android {
     }
 }
 ```
+
+### Known limitations
+This initial version of the plugin has 2 known limitations:
+
+* The `onCantFindLinkItemClicked` callback has not been implemented
+* The `onTokenExpired` callback has not been implemented
+
+These 2 callbacks will be implemented very soon.

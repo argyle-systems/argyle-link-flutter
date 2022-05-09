@@ -1,10 +1,10 @@
 # Argyle Link Flutter plugin
 
-Argyles Flutter plugin which wraps [our native Android and iOS SDKs](https://argyle.com/docs/products/argyle-link)
+Argyle's Flutter plugin which wraps [our native Android and iOS SDKs](https://argyle.com/docs/products/argyle-link)
 
 ## Installation
 
-We currently don't publish our plugin to [pub.dev](https://pub.dev/). If you have access to this repository then you can add the dependancy to your project via your `pubspec.yaml`:
+We currently don't publish our plugin to [pub.dev](https://pub.dev/). If you have access to this repository then you can add the dependency to your project via your `pubspec.yaml`:
 
 ```yaml
 dependencies:

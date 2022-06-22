@@ -1,7 +1,7 @@
 name: argyle_link_flutter
-description: A new flutter plugin project.
+description: Argyle Link for Flutter. Integrates the native iOS and Android SDKs.
 version: 0.0.1
-homepage:
+homepage: https://argyle.com/
 
 environment:
   sdk: ">=2.16.2 <3.0.0"

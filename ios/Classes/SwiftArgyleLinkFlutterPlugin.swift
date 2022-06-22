@@ -154,6 +154,14 @@ extension SwiftArgyleLinkFlutterPlugin: ArgyleResultListener {
         channel?.invokeMethod("onClose", arguments: nil)
     }
 
+    public func onDocumentsSubmitted(accountId: String, userId: String) {
+        channel?.invokeMethod("onDocumentsSubmitted", arguments: ["accountId": accountId, "userId": userId])
+    }
+
+    public func onFormSubmitted(accountId: String, userId: String) {
+        channel?.invokeMethod("onFormSubmitted", arguments: ["accountId": accountId, "userId": userId])
+    }
+
     public func onTokenExpired(handler: @escaping (String) -> ()) {
         // currently not supported
     }

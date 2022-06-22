@@ -1,19 +1,48 @@
 # Argyle Link Flutter plugin
 
+
 Argyle's Flutter plugin which wraps [our native Android and iOS SDKs](https://argyle.com/docs/products/argyle-link)
+
+**Note:** We recommend you to lock your app to portrait orientation.
 
 ## Installation
 
-We currently don't publish our plugin to [pub.dev](https://pub.dev/). If you have access to this repository then you can add the dependency to your project via your `pubspec.yaml`:
+## 1. Add the SDK dependency
 
-```yaml
-dependencies:
-  argyle-link:
-    git:
-      url: git://github.com/argyle-systems/argyle-plugin-flutter-source
+Add `argyle_link_flutter` as a [dependency in your pubspec.yaml file](https://flutter.io/platform-plugins/).
+
+## 2. Integrate
+### 1. Access your Link API Key
+1. Log into your [Console](https://console.argyle.com/api-keys) instance
+2. Navigate to the [API Keys](https://console.argyle.com/api-keys) area under the Developer menu
+3. Copy your Sandbox or Production Link API Key for use in the next step
+
+### 2. Set your Link API Key and start the SDK
+
+``` dart
+...
+
+Argyle.startSdk(
+        configuration: <String, Object>{
+          'linkKey': '[YOUR LINK API KEY]'
+        },
+        onAccountConnected: onAccountConnectedHandler,
+        onAccountCreated: onAccountCreatedHandler,
+        onAccountRemoved: onAccountRemovedHandler,
+        onAccountUpdated: onAccountUpdatedHandler,
+        onAccountError: onAccountErrorHandler,
+        onUserCreated: onUserCreatedHandler,
+        onPayDistributionError: onPayDistributionErrorHandler,
+        onPayDistributionSuccess: onPayDistributionSuccessHandler,
+        onUIEvent: onUiEventHandler,
+        onDocumentsSubmitted: onDocumentsSubmittedHandler,
+        onFormSubmitted: onFormSubmittedHandler,
+        onError: onErrorHandler,
+        onClose: () {});
+
+...
+
 ```
-
-More information about the mechanism for adding unpublished plugins can be found in the [Flutter documentation](https://docs.flutter.dev/development/packages-and-plugins/using-packages#dependencies-on-unpublished-packages).
 
 ### Usage
 
@@ -35,11 +64,3 @@ android {
     }
 }
 ```
-
-### Known limitations
-This initial version of the plugin has 2 known limitations:
-
-* The `onCantFindLinkItemClicked` callback has not been implemented
-* The `onTokenExpired` callback has not been implemented
-
-These 2 callbacks will be implemented very soon.

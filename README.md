@@ -1,31 +1,30 @@
-# Argyle Link Flutter plugin
+# Argyle Link Flutter Plugin
 
 
 Argyle's Flutter plugin which wraps [our native Android and iOS SDKs](https://argyle.com/docs/products/argyle-link)
 
-**Note:** We recommend you to lock your app to portrait orientation.
-
 ## Installation
 
-## 1. Add the SDK dependency
 
-Add `argyle_link_flutter` as a [dependency in your pubspec.yaml file](https://flutter.io/platform-plugins/).
+### 1. Add the SDK dependency
+Add `argyle_link_flutter` to your pubspec.yaml file, either manually, or by running this command:
 
-## 2. Integrate
-### 1. Access your Link API Key
-1. Log into your [Console](https://console.argyle.com/api-keys) instance
-2. Navigate to the [API Keys](https://console.argyle.com/api-keys) area under the Developer menu
-3. Copy your Sandbox or Production Link API Key for use in the next step
+    dart pub add argyle_link_flutter
 
-### 2. Set your Link API Key and start the SDK
+### 2. Configure your integration
 
-``` dart
-...
+**Access your Link API Key**
+- Log into your [Console](https://console.argyle.com/api-keys) instance
+- Navigate to the [API Keys](https://console.argyle.com/api-keys) area under the Developer menu
+- Copy your Sandbox or Production Link API Key for use in the next step
 
-Argyle.startSdk(
-        configuration: <String, Object>{
-          'linkKey': '[YOUR LINK API KEY]'
-        },
+**Start the SDK**  
+To start Link in your Flutter app, call `Argyle.startSdk()` passing in your Link Key and other configuration options.
+
+``` dart...  
+
+    Argyle.startSdk(
+        configuration: createConfig(),
         onAccountConnected: onAccountConnectedHandler,
         onAccountCreated: onAccountCreatedHandler,
         onAccountRemoved: onAccountRemovedHandler,
@@ -39,10 +38,10 @@ Argyle.startSdk(
         onFormSubmitted: onFormSubmittedHandler,
         onError: onErrorHandler,
         onClose: () {});
-
-...
-
-```
+  } 
+...  
+  
+```  
 
 ### Usage
 
@@ -54,13 +53,11 @@ For detailed guidance on how to integrate our SDK please review the example app 
 - iOS 12.0+
 
 ### Android Requirements
+**Note:** We recommend you to lock your app to portrait orientation.
 
-Set the `minSdkVersion` in `android/app/build.gradle`:
 
-```groovy
-android {
-    defaultConfig {
-        minSdkVersion 23 // or greater
-    }
-}
+- `minSdkVersion` of `23` and above
+- Kotlin version `1.6.21` and above
+
+
 ```

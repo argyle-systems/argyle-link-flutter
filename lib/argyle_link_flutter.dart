@@ -66,6 +66,15 @@ class ArgyleLinkFlutter extends ArgyleLinkInterface {
         onUIEvent?.call(
             getEventNameArgument(call), getEventPropertiesArgument(call));
         break;
+      case 'onDocumentsSubmitted':
+        onDocumentsSubmitted?.call(getAccountIdArgument(call), getUseIdArgument(call));
+        break;
+      case 'onFormSubmitted':
+        onFormSubmitted?.call(getAccountIdArgument(call), getUseIdArgument(call));
+        break;
+      case 'onCantFindLinkItemClicked':
+        onCantFindLinkItemClicked?.call();
+        break;
 
       default:
         throw MissingPluginException(

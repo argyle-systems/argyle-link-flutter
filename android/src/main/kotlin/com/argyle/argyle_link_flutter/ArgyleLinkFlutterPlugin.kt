@@ -150,6 +150,14 @@ class ArgyleLinkFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware 
             config.showCantFindLinkItemAtTop(it)
         }
 
+        linkConfiguration.getValueOrNull<Boolean>(CANT_FIND_LINK_ITEM_CALLBACK)?.let { shouldConfigureCallback ->
+                if (shouldConfigureCallback)
+                    config.onCantFindLinkItemClicked {
+                        Log.d(TAG, "onCantFindLinkItemClicked")
+                        channel.invokeMethod("onCantFindLinkItemClicked", null)
+                    }
+            }
+
         config.setCallbackListener(object : Argyle.ArgyleResultListener {
             override fun onTokenExpired(handler: (String) -> Unit) {
                 val token = "token"
@@ -240,6 +248,22 @@ class ArgyleLinkFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware 
                 Log.d(TAG, "onUIEvent: $name, properties: $properties")
                 channel.invokeMethod("onUIEvent", mapOf("name" to name, "properties" to properties))
             }
+
+            override fun onDocumentsSubmitted(accountId: String, userId: String) {
+                Log.d(TAG, "onDocumentsSubmitted: accountId: $accountId, userId: $userId")
+                channel.invokeMethod(
+                    "onDocumentsSubmitted",
+                    mapOf("accountId" to accountId, "userId" to userId)
+                )
+            }
+
+            override fun onFormSubmitted(accountId: String, userId: String) {
+                Log.d(TAG, "onFormSubmitted: accountId: $accountId, userId: $userId")
+                channel.invokeMethod(
+                    "onFormSubmitted",
+                    mapOf("accountId" to accountId, "userId" to userId)
+                )
+            }
         })
 
         Log.d(TAG, "openSdk with user token : $userToken")
@@ -271,6 +295,7 @@ class ArgyleLinkFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware 
         private const val BACK_TO_SEARCH_BUTTON_TITLE = "backToSearchButtonTitle"
         private const val CANT_FIND_LINK_ITEM_TITLE = "cantFindLinkItemTitle"
         private const val SHOW_CANT_FIND_LINK_ITEM_AT_TOP = "showCantFindLinkItemAtTop"
+        private const val CANT_FIND_LINK_ITEM_CALLBACK = "cantFindLinkItemCallback"
     }
 
 }

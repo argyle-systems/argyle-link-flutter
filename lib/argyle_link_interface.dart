@@ -27,6 +27,9 @@ abstract class ArgyleLinkInterface extends PlatformInterface {
   Function? onPayDistributionSuccess;
   Function? onUIEvent;
   Function? onTokenExpired;
+  Function? onDocumentsSubmitted;
+  Function? onFormSubmitted;
+  Function? onCantFindLinkItemClicked;
 
   Future<void> startSdk({
     required Map<String, dynamic> configuration,

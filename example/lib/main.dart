@@ -105,10 +105,10 @@ class _MyAppState extends State<MyApp> {
         onPayDistributionError: onPayDistributionErrorHandler,
         onPayDistributionSuccess: onPayDistributionSuccessHandler,
         onUIEvent: onUiEventHandler,
+        onDocumentsSubmitted: onDocumentsSubmittedHandler,
+        onFormSubmitted: onFormSubmittedHandler,
         onError: onErrorHandler,
-        onClose: () {
-          addSdkCallbackEventToList("onClose");
-        });
+        onClose: () {});
   }
 
   onUiEventHandler(String name, Map<String, Object> properties) {
@@ -152,6 +152,16 @@ class _MyAppState extends State<MyApp> {
   onAccountUpdatedHandler(String accountId, String userId, String linkItemId) {
     addSdkCallbackEventToList("onAccountUpdated", getFormattedParams(accountId, userId, linkItemId));
   }
+
+  onDocumentsSubmittedHandler(String accountId, String userId) {
+    addSdkCallbackEventToList(
+        "onDocumentsSubmitted", "AccountId: $accountId \nUserId: $userId");
+  }
+
+  onFormSubmittedHandler(String accountId, String userId) {
+    addSdkCallbackEventToList(
+        "onFormSubmittedHandler", "AccountId: $accountId \nUserId: $userId");
+  }
 }
 
 getFormattedParams(String accountId, String userId, String linkItemId) {
@@ -162,7 +172,8 @@ createConfig() {
   return <String, Object>{
     'linkKey': '018022b6-3f88-3907-341e-94447f8141d1',
     'apiHost': 'https://api-sandbox.develop.argyle.io/v1/',
-    'linkItems' : ['kroger', 'uber'],
+    // 'linkItems' : ['kroger', 'uber'],
+    // 'cantFindLinkItemCallback' : true
     // 'customizationId' : 'CREATE A CUSTOMISATION IN CONSOLE',
     // 'payDistributionItemsOnly' : false,
     // 'showCantFindLinkItemAtTop' : false

@@ -31,7 +31,10 @@ class Argyle {
     Function? onPayDistributionError,
     Function? onPayDistributionSuccess,
     Function? onUIEvent,
-    Function? onTokenExpired
+    Function? onTokenExpired,
+    Function? onDocumentsSubmitted,
+    Function? onFormSubmitted,
+    Function? onCantFindLinkItemClicked
   }) async {
     _platform.onAccountConnected = onAccountConnected;
     _platform.onAccountCreated = onAccountCreated;
@@ -45,6 +48,9 @@ class Argyle {
     _platform.onPayDistributionSuccess = onPayDistributionSuccess;
     _platform.onUIEvent = onUIEvent;
     _platform.onTokenExpired = onTokenExpired;
+    _platform.onDocumentsSubmitted = onDocumentsSubmitted;
+    _platform.onFormSubmitted = onFormSubmitted;
+    _platform.onCantFindLinkItemClicked = onCantFindLinkItemClicked;
 
     await _platform.startSdk(
       configuration: configuration

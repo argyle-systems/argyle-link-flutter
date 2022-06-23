@@ -21,10 +21,13 @@ Add `argyle_link_flutter` to your pubspec.yaml file, either manually, or by runn
 **Start the SDK**  
 To start Link in your Flutter app, call `Argyle.startSdk()` passing in your Link Key and other configuration options.
 
-``` dart...  
+``` dart
+
+...  
 
     Argyle.startSdk(
-        configuration: createConfig(),
+        configuration: <String, Object>{
+          'linkKey': '[YOUR LINK KEY]'},
         onAccountConnected: onAccountConnectedHandler,
         onAccountCreated: onAccountCreatedHandler,
         onAccountRemoved: onAccountRemovedHandler,
@@ -38,7 +41,6 @@ To start Link in your Flutter app, call `Argyle.startSdk()` passing in your Link
         onFormSubmitted: onFormSubmittedHandler,
         onError: onErrorHandler,
         onClose: () {});
-  } 
 ...  
   
 ```  
@@ -58,6 +60,3 @@ For detailed guidance on how to integrate our SDK please review the example app 
 
 - `minSdkVersion` of `23` and above
 - Kotlin version `1.6.21` and above
-
-
-```

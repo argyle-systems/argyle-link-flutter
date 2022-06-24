@@ -1,4 +1,4 @@
-# Argyle Link Flutter plugin
+# Argyle Link Flutter plugin (Beta)
 
 
 Argyle's Flutter plugin which wraps [our native Android and iOS SDKs](https://argyle.com/docs/products/argyle-link)

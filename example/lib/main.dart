@@ -170,7 +170,7 @@ getFormattedParams(String accountId, String userId, String linkItemId) {
 
 createConfig() {
   return <String, Object>{
-    'linkKey': '018022b6-3f88-3907-341e-94447f8141d1',
+    'linkKey': '[YOUR LINK KEY]',
     'apiHost': 'https://api-sandbox.develop.argyle.io/v1/',
     // 'linkItems' : ['kroger', 'uber'],
     // 'cantFindLinkItemCallback' : true

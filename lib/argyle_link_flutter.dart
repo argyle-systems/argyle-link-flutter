@@ -73,7 +73,7 @@ class ArgyleLinkFlutter extends ArgyleLinkInterface {
         onFormSubmitted?.call(getAccountIdArgument(call), getUseIdArgument(call));
         break;
       case 'onCantFindLinkItemClicked':
-        onCantFindLinkItemClicked?.call();
+        onCantFindLinkItemClicked?.call(getQueryArgument(call));
         break;
 
       default:
@@ -93,4 +93,5 @@ class ArgyleLinkFlutter extends ArgyleLinkInterface {
   getLinkItemIdArgument(MethodCall call) => call.arguments['linkItemId'];
   getUseIdArgument(MethodCall call) => call.arguments['userId'];
   getAccountIdArgument(MethodCall call) => call.arguments['accountId'];
+  getQueryArgument(MethodCall call) => call.arguments['query'];
 }

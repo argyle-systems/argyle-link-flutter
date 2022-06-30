@@ -52,8 +52,12 @@ class Argyle {
     _platform.onFormSubmitted = onFormSubmitted;
     _platform.onCantFindLinkItemClicked = onCantFindLinkItemClicked;
 
+    Map<String, Object> finalConfig = configuration;
+    if (onCantFindLinkItemClicked != null) {
+      finalConfig['cantFindLinkItemCallback'] = true;
+    }
     await _platform.startSdk(
-      configuration: configuration
+      configuration: finalConfig
     );
   }
 }

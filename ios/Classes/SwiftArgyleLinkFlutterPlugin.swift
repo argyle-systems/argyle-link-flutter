@@ -102,6 +102,11 @@ public class SwiftArgyleLinkFlutterPlugin: NSObject, FlutterPlugin {
         if let value = linkConfiguration[ConfigKeys.showCantFindLinkItemAtTop] as? Bool {
             _ = instance.showCantFindLinkItemAtTop(value)
         }
+        if linkConfiguration[ConfigKeys.cantFindLinkItemCallback] as? Bool == true {
+            _ = instance.onCantFindLinkItemClicked { [weak self] query in
+                self?.channel?.invokeMethod("onCantFindLinkItemClicked", arguments: ["query": query])
+            }
+        }
     }
 }
 
@@ -206,4 +211,5 @@ private struct ConfigKeys {
     static let backToSearchButtonTitle = "backToSearchButtonTitle"
     static let cantFindLinkItemTitle = "cantFindLinkItemTitle"
     static let showCantFindLinkItemAtTop = "showCantFindLinkItemAtTop"
+    static let cantFindLinkItemCallback = "cantFindLinkItemCallback"
 }

@@ -1,3 +1,7 @@
+## 0.0.6
+
+* Added `onCantFindLinkItemClicked` callback
+
 ## 0.0.5
 
 * Readme updates

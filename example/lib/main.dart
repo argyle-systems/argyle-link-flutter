@@ -108,7 +108,9 @@ class _MyAppState extends State<MyApp> {
         onDocumentsSubmitted: onDocumentsSubmittedHandler,
         onFormSubmitted: onFormSubmittedHandler,
         onError: onErrorHandler,
-        onClose: () {});
+        onClose: () {},
+        // onCantFindLinkItemClicked: onCantFindLinkItemClicked
+      );
   }
 
   onUiEventHandler(String name, Map<String, Object> properties) {
@@ -162,6 +164,10 @@ class _MyAppState extends State<MyApp> {
     addSdkCallbackEventToList(
         "onFormSubmittedHandler", "AccountId: $accountId \nUserId: $userId");
   }
+
+  onCantFindLinkItemClicked(String query) {
+    addSdkCallbackEventToList("onCantFindLinkItemClicked", "Query: $query");
+  }
 }
 
 getFormattedParams(String accountId, String userId, String linkItemId) {
@@ -170,10 +176,9 @@ getFormattedParams(String accountId, String userId, String linkItemId) {
 
 createConfig() {
   return <String, Object>{
-    'linkKey': '[YOUR LINK KEY]',
+    'linkKey': 'YOUR-LINK-KEY',
     'apiHost': 'https://api-sandbox.develop.argyle.io/v1/',
     // 'linkItems' : ['kroger', 'uber'],
-    // 'cantFindLinkItemCallback' : true
     // 'customizationId' : 'CREATE A CUSTOMISATION IN CONSOLE',
     // 'payDistributionItemsOnly' : false,
     // 'showCantFindLinkItemAtTop' : false

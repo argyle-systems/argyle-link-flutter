@@ -151,12 +151,12 @@ class ArgyleLinkFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware 
         }
 
         linkConfiguration.getValueOrNull<Boolean>(CANT_FIND_LINK_ITEM_CALLBACK)?.let { shouldConfigureCallback ->
-                if (shouldConfigureCallback)
-                    config.onCantFindLinkItemClicked {
-                        Log.d(TAG, "onCantFindLinkItemClicked")
-                        channel.invokeMethod("onCantFindLinkItemClicked", null)
-                    }
-            }
+            if (shouldConfigureCallback)
+                config.onCantFindLinkItemClicked { query ->
+                    Log.d(TAG, "onCantFindLinkItemClicked: query: $query")
+                    channel.invokeMethod("onCantFindLinkItemClicked", mapOf("query" to query))
+                }
+        }
 
         config.setCallbackListener(object : Argyle.ArgyleResultListener {
             override fun onTokenExpired(handler: (String) -> Unit) {

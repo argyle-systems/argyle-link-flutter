@@ -185,6 +185,8 @@ private extension ArgyleErrorType {
             return "INVALID_LINK_ITEMS"
         case .GENERIC:
             return "GENERIC"
+        case .CALLBACK_UNDEFINED:
+            return "CALLBACK_UNDEFINED"
         @unknown default:
             return "GENERIC"
         }

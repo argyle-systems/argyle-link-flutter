@@ -140,7 +140,7 @@ extension SwiftArgyleLinkFlutterPlugin: ArgyleResultListener {
     }
 
     public func onUserCreated(token: String, userId: String) {
-        channel?.invokeMethod("onUserCreated", arguments: ["token": token, "userId": userId])
+        channel?.invokeMethod("onUserCreated", arguments: ["userToken": token, "userId": userId])
     }
 
     public func onError(error: ArgyleErrorType) {

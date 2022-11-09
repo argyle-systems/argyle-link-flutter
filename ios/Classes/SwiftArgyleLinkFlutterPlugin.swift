@@ -187,6 +187,8 @@ private extension ArgyleErrorType {
             return "GENERIC"
         case .CALLBACK_UNDEFINED:
             return "CALLBACK_UNDEFINED"
+        case .CARD_ISSUER_UNAVAILABLE:
+            return "CARD_ISSUER_UNAVAILABLE"
         @unknown default:
             return "GENERIC"
         }

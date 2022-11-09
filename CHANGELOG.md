@@ -1,3 +1,11 @@
+## 0.0.8
+
+Bumped native iOS/Android SDKs to 4.6.2/4.6.3 versions correspondingly.
+Check [iOS Link](https://github.com/argyle-systems/argyle-link-ios/releases) and [Android Link](https://github.com/argyle-systems/argyle-link-android/releases) changelogs for more details.
+
+Fixed
+* onUserCreated callback not firing properly on iOS
+
 ## 0.0.7
 
 Added

@@ -48,5 +48,5 @@ android {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'com.argyle:argyle-plugin-android-source:4.3.2'
+    implementation 'com.argyle:argyle-plugin-android-source:4.6.3'
 }

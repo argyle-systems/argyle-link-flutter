@@ -140,7 +140,7 @@ extension SwiftArgyleLinkFlutterPlugin: ArgyleResultListener {
     }
 
     public func onUserCreated(token: String, userId: String) {
-        channel?.invokeMethod("onUserCreated", arguments: ["token": token, "userId": userId])
+        channel?.invokeMethod("onUserCreated", arguments: ["userToken": token, "userId": userId])
     }
 
     public func onError(error: ArgyleErrorType) {
@@ -187,6 +187,8 @@ private extension ArgyleErrorType {
             return "GENERIC"
         case .CALLBACK_UNDEFINED:
             return "CALLBACK_UNDEFINED"
+        case .CARD_ISSUER_UNAVAILABLE:
+            return "CARD_ISSUER_UNAVAILABLE"
         @unknown default:
             return "GENERIC"
         }

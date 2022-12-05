@@ -1,3 +1,10 @@
+## 0.0.9
+
+Bumped native iOS/Android SDKs to 4.7.0/4.7.2 versions correspondingly.
+
+Fixed
+* close method being broken on Android
+
 ## 0.0.8
 
 Bumped native iOS/Android SDKs to 4.6.2/4.6.3 versions correspondingly.

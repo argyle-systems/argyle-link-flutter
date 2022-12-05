@@ -177,7 +177,7 @@ getFormattedParams(String accountId, String userId, String linkItemId) {
 createConfig() {
   return <String, Object>{
     'linkKey': 'YOUR-LINK-KEY',
-    'apiHost': 'https://api-sandbox.develop.argyle.io/v1/',
+    'apiHost': 'https://api-sandbox.argyle.io/v1/',
     // 'linkItems' : ['kroger', 'uber'],
     // 'customizationId' : 'CREATE A CUSTOMISATION IN CONSOLE',
     // 'payDistributionItemsOnly' : false,

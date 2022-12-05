@@ -60,4 +60,8 @@ class Argyle {
       configuration: finalConfig
     );
   }
+
+  static Future<void> close() async {
+    await _platform.close();
+  }
 }

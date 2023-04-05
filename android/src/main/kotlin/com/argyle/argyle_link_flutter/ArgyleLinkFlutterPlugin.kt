@@ -3,11 +3,9 @@ package com.argyle.argyle_link_flutter
 import android.app.Activity
 import android.content.Context
 import android.util.Log
-import androidx.annotation.NonNull
 import com.argyle.Argyle
 import com.argyle.ArgyleConfig
 import com.argyle.ArgyleErrorType
-
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
@@ -31,7 +29,7 @@ class ArgyleLinkFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware 
         onAttachedToActivity(binding)
     }
 
-    override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
+    override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         channel.setMethodCallHandler(null)
     }
 
@@ -43,13 +41,13 @@ class ArgyleLinkFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware 
         this.channel.setMethodCallHandler(null)
     }
 
-    override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
+    override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
         channel = MethodChannel(flutterPluginBinding.binaryMessenger, channelName)
         channel.setMethodCallHandler(this)
         context = flutterPluginBinding.applicationContext
     }
 
-    override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
+    override fun onMethodCall(call: MethodCall, result: Result) {
         when (call.method) {
             "startSdk" -> {
                 startSdk(call.arguments as Map<String, Any>)

@@ -32,7 +32,7 @@ class ArgyleLink {
       'onError': config.onError != null,
       'onClose': config.onClose != null,
       'onTokenExpired': config.onTokenExpired != null,
-      'onUiEvent': config.onUiEvent
+      'onUiEvent': config.onUiEvent != null
     };
     return _channel.invokeMethod('start', {'config': params});
   }
@@ -111,7 +111,7 @@ class ArgyleLink {
   }
 
   static LinkErrorType _parseLinkErrorType(String type) {
-    final normalizedType = type.toLowerCase().replaceAll("_", "");
+    final normalizedType = type.toLowerCase().replaceAll('_', '');
     return LinkErrorType.values
         .firstWhere((element) => element.name.toLowerCase() == normalizedType);
   }
@@ -122,6 +122,6 @@ class ArgyleLink {
   }
 
   static void _onNewTokenProvided(String newToken) {
-    _channel.invokeMethod('provideNewToken', {"newToken": newToken});
+    _channel.invokeMethod('provideNewToken', {'newToken': newToken});
   }
 }

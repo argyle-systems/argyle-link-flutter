@@ -1,6 +1,6 @@
 class UIEvent {
   final String name;
-  final Map<String, dynamic>? properties;
+  final Map? properties;
 
   UIEvent({required this.name, this.properties});
 }

@@ -1,47 +1,66 @@
 package com.argyle.argyle_link_flutter
 
-import android.content.Context
+import android.app.Activity
 import com.argyle.*
 import io.flutter.embedding.engine.plugins.FlutterPlugin
+import io.flutter.embedding.engine.plugins.activity.ActivityAware
+import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
 
-class ArgyleLinkFlutterPlugin : FlutterPlugin, MethodCallHandler {
+class ArgyleLinkFlutterPlugin : FlutterPlugin, ActivityAware, MethodCallHandler {
 
     private val channelName = "argyle_link_flutter"
 
     private lateinit var channel: MethodChannel
-    private var context: Context? = null
+    private var activity: Activity? = null
     private var newTokenCallback: ((String) -> Unit)? = null
+
+    override fun onAttachedToActivity(binding: ActivityPluginBinding) {
+        activity = binding.activity
+    }
+
+    override fun onDetachedFromActivityForConfigChanges() {
+        activity = null
+    }
+
+    override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) {
+        activity = binding.activity
+    }
+
+    override fun onDetachedFromActivity() {
+        activity = null
+    }
 
     override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         channel.setMethodCallHandler(null)
     }
 
     override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
-        context = flutterPluginBinding.applicationContext
         channel = MethodChannel(flutterPluginBinding.binaryMessenger, channelName)
         channel.setMethodCallHandler(this)
     }
 
     override fun onMethodCall(call: MethodCall, result: Result) {
-        val returnedResult = when (call.method) {
-            "startSdk" -> start(call)
+        when (call.method) {
+            "start" -> start(call)
             "provideNewToken" -> provideNewToken(call)
             "close" -> close()
-            else -> null
+            else -> {
+                result.notImplemented()
+                return
+            }
         }
-        if (returnedResult != null) {
-            result.success(returnedResult)
-        }
+        result.success(null)
     }
 
     private fun start(call: MethodCall) {
+        activity ?: throw IllegalStateException("Activity must be attached")
         val params = call.argument<Map<String, Any>>("config")
             ?: throw IllegalArgumentException("config parameter must be set")
-        ArgyleLink.start(context!!, parseLinkConfig(params))
+        ArgyleLink.start(activity!!, parseLinkConfig(params))
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -51,8 +70,10 @@ class ArgyleLinkFlutterPlugin : FlutterPlugin, MethodCallHandler {
         sandbox = params["sandbox"] as Boolean
     ).apply {
         items = params["items"] as List<String>?
+        accountId = params["accountId"] as String?
         flowId = params["flowId"] as String?
         ddsConfig = params["ddsConfig"] as String?
+        apiHost = "https://api-sandbox.develop.argyle.com"
 
         if (params["onCantFindItemClicked"] as Boolean) {
             onCantFindItemClicked = {

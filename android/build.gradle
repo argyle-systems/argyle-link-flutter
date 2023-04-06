@@ -42,11 +42,11 @@ android {
     }
 
     defaultConfig {
-        minSdkVersion 23
+        minSdkVersion 26
     }
 }
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'com.argyle:argyle-plugin-android-source:4.7.2'
+    implementation 'com.argyle:argyle-link-android:5.0.0'
 }

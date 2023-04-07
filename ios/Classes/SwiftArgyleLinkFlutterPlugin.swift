@@ -1,10 +1,12 @@
 import Flutter
 import UIKit
-import ArgyleLink
+import Argyle
 
 public class SwiftArgyleLinkFlutterPlugin: NSObject, FlutterPlugin {
 
     private static var _channel: FlutterMethodChannel?
+
+    private var newTokenCallback: ((String) -> Void)? = nil
 
     private var channel: FlutterMethodChannel? {
         SwiftArgyleLinkFlutterPlugin._channel
@@ -22,198 +24,157 @@ public class SwiftArgyleLinkFlutterPlugin: NSObject, FlutterPlugin {
     }
 
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
-        if (call.method == "startSdk") {
+        switch call.method {
+        case "start":
             startSdk(call.arguments as! [String: Any])
             result("")
-        } else if (call.method == "close") {
+        case "close":
             closeSdk()
             result("")
-        } else {
+        default:
             result(FlutterMethodNotImplemented)
         }
     }
 
     private func startSdk(_ linkConfiguration: [String: Any]) {
-        let linkKey = linkConfiguration[ConfigKeys.linkKey] as! String
-        let apiHost = linkConfiguration[ConfigKeys.apiHost] as! String
-        let userToken = linkConfiguration[ConfigKeys.userToken] as? String
-
-        let instance = Argyle.shared
-        _ = instance.loginWith(linkKey: linkKey, apiHost: apiHost, userToken: userToken ?? "")
-        _ = instance.resultListener(self)
-        configInstanceParams(linkConfiguration)
-
-        let controller = Argyle.shared.controller
-        controller.modalPresentationStyle = .fullScreen
-        presentedController?.present(controller, animated: true, completion: nil)
+        ArgyleLink.start(
+            from: presentedController!,
+            config: parseConfig(params: linkConfiguration["config"] as! [String: Any])
+        )
     }
 
     private func closeSdk() {
-        Argyle.shared.close()
+        ArgyleLink.close()
     }
 
-    private func configInstanceParams(_ linkConfiguration: [String: Any]) {
-        let instance = Argyle.shared
-        if let value = linkConfiguration[ConfigKeys.linkItemIds] as? [String] {
-            _ = instance.linkItems(value)
-        }
-        if let value = linkConfiguration[ConfigKeys.pdConfig] as? String {
-            _ = instance.payDistributionConfig(value)
-        }
-        if let value = linkConfiguration[ConfigKeys.pdItemsOnly] as? Bool {
-            _ = instance.payDistributionItemsOnly(value)
-        }
-        if let value = linkConfiguration[ConfigKeys.pdUpdateFlow] as? Bool {
-            _ = instance.payDistributionUpdateFlow(value)
-        }
-        if let value = linkConfiguration[ConfigKeys.pdAutoTrigger] as? Bool {
-            _ = instance.payDistributionAutoTrigger(value)
-        }
-        if let value = linkConfiguration[ConfigKeys.sdkCustomisationId] as? String {
-            _ = instance.customizationId(value)
-        }
-        if let value = linkConfiguration[ConfigKeys.companyName] as? String {
-            _ = instance.companyName(value)
-        }
-        if let value = linkConfiguration[ConfigKeys.exitButtonTitle] as? String {
-            _ = instance.exitButtonTitle(value)
-        }
-        if let value = linkConfiguration[ConfigKeys.excludeCategories] as? [String] {
-            _ = instance.excludeCategories(value)
-        }
-        if let value = linkConfiguration[ConfigKeys.showCategories] as? Bool {
-            _ = instance.showCategories(value)
-        }
-        if let value = linkConfiguration[ConfigKeys.showBackToSearchButton] as? Bool {
-            _ = instance.showBackToSearchButton(value)
-        }
-        if let value = linkConfiguration[ConfigKeys.pdReviewScreenSubtitle] as? String {
-            _ = instance.payDistributionReviewScreenSubtitle(value)
-        }
-        if let value = linkConfiguration[ConfigKeys.pdReviewScreenTitle] as? String {
-            _ = instance.payDistributionReviewScreenTitle(value)
-        }
-        if let value = linkConfiguration[ConfigKeys.backToSearchButtonTitle] as? String {
-            _ = instance.backToSearchButtonTitle(value)
-        }
-        if let value = linkConfiguration[ConfigKeys.cantFindLinkItemTitle] as? String {
-            _ = instance.cantFindLinkItemTitle(value)
-        }
-        if let value = linkConfiguration[ConfigKeys.showCantFindLinkItemAtTop] as? Bool {
-            _ = instance.showCantFindLinkItemAtTop(value)
-        }
-        if linkConfiguration[ConfigKeys.cantFindLinkItemCallback] as? Bool == true {
-            _ = instance.onCantFindLinkItemClicked { [weak self] query in
-                self?.channel?.invokeMethod("onCantFindLinkItemClicked", arguments: ["query": query])
+    private func parseConfig(params: [String: Any]) -> LinkConfig {
+        var config = LinkConfig(
+            linkKey: params["linkKey"] as! String,
+            userToken: params["userToken"] as! String,
+            sandbox: params["sandbox"] as! Bool
+        )
+        config.items = params["items"] as? [String]
+        config.accountId = params["accountId"] as? String
+        config.flowId = params["flowId"] as? String
+        config.ddsConfig = params["ddsConfig"] as? String
+
+        if (params["onTokenExpired"] as? Bool) == true {
+            config.onTokenExpired = { [weak self] callback in
+                self?.newTokenCallback = callback
+                self?.channel?.invokeMethod("onTokenExpired", arguments: nil)
             }
         }
+
+        if (params["onCantFindItemClicked"] as? Bool) == true {
+            config.onCantFindItemClicked = { [weak self] in
+                self?.channel?.invokeMethod("onCantFindItemClicked", arguments: ["term": $0])
+            }
+        }
+        if (params["onAccountCreated"] as? Bool) == true {
+            config.onAccountCreated = { [weak self] in
+                self?.channel?.invokeMethod("onAccountCreated", arguments: $0.toMap())
+            }
+        }
+        if (params["onAccountConnected"] as? Bool) == true {
+            config.onAccountConnected = { [weak self] in
+                self?.channel?.invokeMethod("onAccountConnected", arguments: $0.toMap())
+            }
+        }
+        if (params["onAccountRemoved"] as? Bool) == true {
+            config.onAccountRemoved = { [weak self] in
+                self?.channel?.invokeMethod("onAccountRemoved", arguments: $0.toMap())
+            }
+        }
+        if (params["onAccountError"] as? Bool) == true {
+            config.onAccountError = { [weak self] in
+                self?.channel?.invokeMethod("onAccountError", arguments: $0.toMap())
+            }
+        }
+        if (params["onDDSSuccess"] as? Bool) == true {
+            config.onDDSSuccess = { [weak self] in
+                self?.channel?.invokeMethod("onDDSSuccess", arguments: $0.toMap())
+            }
+        }
+        if (params["onDDSError"] as? Bool) == true {
+            config.onDDSError = { [weak self] in
+                self?.channel?.invokeMethod("onDDSError", arguments: $0.toMap())
+            }
+        }
+        if (params["onFormSubmitted"] as? Bool) == true {
+            config.onFormSubmitted = { [weak self] in
+                self?.channel?.invokeMethod("onFormSubmitted", arguments: $0.toMap())
+            }
+        }
+        if (params["onDocumentsSubmitted"] as? Bool) == true {
+            config.onDocumentsSubmitted = { [weak self] in
+                self?.channel?.invokeMethod("onDocumentsSubmitted", arguments: $0.toMap())
+            }
+        }
+        if (params["onError"] as? Bool) == true {
+            config.onError = { [weak self] in
+                self?.channel?.invokeMethod("onError", arguments: $0.toMap())
+            }
+        }
+        if (params["onClose"] as? Bool) == true {
+            config.onClose = { [weak self] in
+                self?.channel?.invokeMethod("onClose", arguments: nil)
+            }
+        }
+        if (params["onUiEvent"] as? Bool) == true {
+            config.onUIEvent = { [weak self] in
+                self?.channel?.invokeMethod("onUiEvent", arguments: $0.toMap())
+            }
+        }
+
+        return config
     }
 }
 
-extension SwiftArgyleLinkFlutterPlugin: ArgyleResultListener {
-    public func onAccountCreated(accountId: String, userId: String, linkItemId: String) {
-        channel?.invokeMethod("onAccountCreated", arguments: ["accountId": accountId, "userId": userId, "linkItemId": linkItemId])
+private extension AccountData {
+    func toMap() -> [String: Any] {
+        ["accountData": ["accountId": accountId, "userId": userId, "itemId": itemId]]
     }
+}
 
-    public func onAccountConnected(accountId: String, userId: String, linkItemId: String) {
-        channel?.invokeMethod("onAccountConnected", arguments: ["accountId": accountId, "userId": userId, "linkItemId": linkItemId])
+private extension FormData {
+    func toMap() -> [String: Any] {
+        ["formData": ["accountId": accountId, "userId": userId]]
     }
+}
 
-    public func onAccountError(accountId: String, userId: String, linkItemId: String) {
-        channel?.invokeMethod("onAccountError", arguments: ["accountId": accountId, "userId": userId, "linkItemId": linkItemId])
+private extension LinkError {
+    func toMap() -> [String: Any] {
+        [
+            "linkError": [
+                "errorType": errorType.encoded,
+                "errorMessage": errorMessage,
+                "errorDetails": errorDetails
+            ]
+        ]
     }
+}
 
-    public func onAccountUpdated(accountId: String, userId: String, linkItemId: String) {
-        channel?.invokeMethod("onAccountUpdated", arguments: ["accountId": accountId, "userId": userId, "linkItemId": linkItemId])
-    }
-
-    public func onAccountRemoved(accountId: String, userId: String, linkItemId: String) {
-        channel?.invokeMethod("onAccountRemoved", arguments: ["accountId": accountId, "userId": userId, "linkItemId": linkItemId])
-    }
-
-    public func onPayDistributionSuccess(accountId: String, userId: String, linkItemId: String) {
-        channel?.invokeMethod("onPayDistributionSuccess", arguments: ["accountId": accountId, "userId": userId, "linkItemId": linkItemId])
-    }
-
-    public func onPayDistributionError(accountId: String, userId: String, linkItemId: String) {
-        channel?.invokeMethod("onPayDistributionError", arguments: ["accountId": accountId, "userId": userId, "linkItemId": linkItemId])
-    }
-
-    public func onUserCreated(token: String, userId: String) {
-        channel?.invokeMethod("onUserCreated", arguments: ["userToken": token, "userId": userId])
-    }
-
-    public func onError(error: ArgyleErrorType) {
-        channel?.invokeMethod("onError", arguments: ["error": error.encoded])
-    }
-
-    public func onExitIntroClicked() {
-        channel?.invokeMethod("onExitIntroClicked", arguments: nil)
-    }
-
-    public func onUIEvent(name: String, properties: [String : Any]) {
-        channel?.invokeMethod("onUIEvent", arguments: ["name": name, "properties": properties])
-    }
-
-    public func onClose() {
-        channel?.invokeMethod("onClose", arguments: nil)
-    }
-
-    public func onDocumentsSubmitted(accountId: String, userId: String) {
-        channel?.invokeMethod("onDocumentsSubmitted", arguments: ["accountId": accountId, "userId": userId])
-    }
-
-    public func onFormSubmitted(accountId: String, userId: String) {
-        channel?.invokeMethod("onFormSubmitted", arguments: ["accountId": accountId, "userId": userId])
-    }
-
-    public func onTokenExpired(handler: @escaping (String) -> ()) {
-        // currently not supported
+private extension Argyle.UIEvent {
+    func toMap() -> [String: Any] {
+        ["uiEvent": ["name": name, "properties": properties]]
     }
 }
 
 private extension ArgyleErrorType {
     var encoded: String {
         switch self {
-        case .INVALID_PD_CONFIG:
-            return "INVALID_PD_CONFIG"
-        case .INVALID_USER_TOKEN:
-            return "INVALID_USER_TOKEN"
-        case .INVALID_LINK_KEY:
-            return "INVALID_LINK_KEY"
-        case .INVALID_LINK_ITEMS:
-            return "INVALID_LINK_ITEMS"
-        case .GENERIC:
-            return "GENERIC"
-        case .CALLBACK_UNDEFINED:
-            return "CALLBACK_UNDEFINED"
-        case .CARD_ISSUER_UNAVAILABLE:
-            return "CARD_ISSUER_UNAVAILABLE"
-        @unknown default:
-            return "GENERIC"
+        case .INVALID_DDS_CONFIG: return "INVALID_PD_CONFIG"
+        case .INVALID_USER_TOKEN: return "INVALID_USER_TOKEN"
+        case .INVALID_LINK_KEY: return "INVALID_LINK_KEY"
+        case .INVALID_ITEMS: return "INVALID_ITEMS"
+        case .INVALID_ACCOUNT_ID: return "INVALID_ACCOUNT_ID"
+        case .EXPIRED_USER_TOKEN: return "EXPIRED_USER_TOKEN"
+        case .CALLBACK_UNDEFINED: return "CALLBACK_UNDEFINED"
+        case .CARD_ISSUER_UNAVAILABLE: return "CARD_ISSUER_UNAVAILABLE"
+        case .DDS_NOT_SUPPORTED: return "DDS_NOT_SUPPORTED"
+        case .INCOMPATIBLE_DDS_CONFIG: return "INCOMPATIBLE_DDS_CONFIG"
+        case .GENERIC: return "GENERIC"
+        @unknown default: return "GENERIC"
         }
     }
-}
-
-private struct ConfigKeys {
-    static let linkKey = "linkKey"
-    static let apiHost = "apiHost"
-    static let userToken = "userToken"
-    static let linkItemIds = "linkItems"
-    static let pdConfig = "payDistributionConfig"
-    static let pdItemsOnly = "payDistributionItemsOnly"
-    static let pdUpdateFlow = "payDistributionUpdateFlow"
-    static let pdAutoTrigger = "payDistributionAutoTrigger"
-    static let sdkCustomisationId = "customizationId"
-    static let companyName = "companyName"
-    static let exitButtonTitle = "exitButtonTitle"
-    static let excludeCategories = "excludeCategories"
-    static let showCategories = "showCategories"
-    static let showBackToSearchButton = "showBackToSearchButton"
-    static let pdReviewScreenSubtitle = "pdReviewScreenSubtitle"
-    static let pdReviewScreenTitle = "pdReviewScreenTitle"
-    static let backToSearchButtonTitle = "backToSearchButtonTitle"
-    static let cantFindLinkItemTitle = "cantFindLinkItemTitle"
-    static let showCantFindLinkItemAtTop = "showCantFindLinkItemAtTop"
-    static let cantFindLinkItemCallback = "cantFindLinkItemCallback"
 }

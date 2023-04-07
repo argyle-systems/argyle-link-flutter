@@ -1,13 +1,7 @@
 package com.argyle.argyle_link_flutter
 
 import android.app.Activity
-import android.content.Context
-import android.util.Log
-import androidx.annotation.NonNull
-import com.argyle.Argyle
-import com.argyle.ArgyleConfig
-import com.argyle.ArgyleErrorType
-
+import com.argyle.*
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
@@ -16,286 +10,149 @@ import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
 
-/** ArgyleLinkFlutterPlugin */
-class ArgyleLinkFlutterPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
+class ArgyleLinkFlutterPlugin : FlutterPlugin, ActivityAware, MethodCallHandler {
 
     private val channelName = "argyle_link_flutter"
 
     private lateinit var channel: MethodChannel
-    private lateinit var activity: Activity
-    private var context: Context? = null
-
-    override fun onDetachedFromActivity() {}
-
-    override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) {
-        onAttachedToActivity(binding)
-    }
-
-    override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
-        channel.setMethodCallHandler(null)
-    }
+    private var activity: Activity? = null
+    private var newTokenCallback: ((String) -> Unit)? = null
 
     override fun onAttachedToActivity(binding: ActivityPluginBinding) {
         activity = binding.activity
     }
 
     override fun onDetachedFromActivityForConfigChanges() {
-        this.channel.setMethodCallHandler(null)
+        activity = null
     }
 
-    override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
+    override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) {
+        activity = binding.activity
+    }
+
+    override fun onDetachedFromActivity() {
+        activity = null
+    }
+
+    override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
+        channel.setMethodCallHandler(null)
+    }
+
+    override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
         channel = MethodChannel(flutterPluginBinding.binaryMessenger, channelName)
         channel.setMethodCallHandler(this)
-        context = flutterPluginBinding.applicationContext
     }
 
-    override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
+    override fun onMethodCall(call: MethodCall, result: Result) {
         when (call.method) {
-            "startSdk" -> {
-                startSdk(call.arguments as Map<String, Any>)
-                result.success("")
-            }
-            "close" -> {
-                close()
-            }
+            "start" -> start(call)
+            "provideNewToken" -> provideNewToken(call)
+            "close" -> close()
             else -> {
                 result.notImplemented()
+                return
             }
         }
+        result.success(null)
+    }
+
+    private fun start(call: MethodCall) {
+        activity ?: throw IllegalStateException("Activity must be attached")
+        val params = call.argument<Map<String, Any>>("config")
+            ?: throw IllegalArgumentException("config parameter must be set")
+        ArgyleLink.start(activity!!, parseLinkConfig(params))
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private fun parseLinkConfig(params: Map<String, Any>) = LinkConfig(
+        linkKey = params["linkKey"] as String,
+        userToken = params["userToken"] as String,
+        sandbox = params["sandbox"] as Boolean
+    ).apply {
+        items = params["items"] as List<String>?
+        accountId = params["accountId"] as String?
+        flowId = params["flowId"] as String?
+        ddsConfig = params["ddsConfig"] as String?
+
+        if (params["onCantFindItemClicked"] as Boolean) {
+            onCantFindItemClicked = {
+                channel.invokeMethod("onCantFindItemClicked", mapOf("term" to it))
+            }
+        }
+        if (params["onAccountCreated"] as Boolean) {
+            onAccountCreated = { channel.invokeMethod("onAccountCreated", it.toMap()) }
+        }
+        if (params["onAccountConnected"] as Boolean) {
+            onAccountConnected = { channel.invokeMethod("onAccountConnected", it.toMap()) }
+        }
+        if (params["onAccountRemoved"] as Boolean) {
+            onAccountRemoved = { channel.invokeMethod("onAccountRemoved", it.toMap()) }
+        }
+        if (params["onAccountError"] as Boolean) {
+            onAccountError = { channel.invokeMethod("onAccountError", it.toMap()) }
+        }
+        if (params["onDDSSuccess"] as Boolean) {
+            onDDSSuccess = { channel.invokeMethod("onDDSSuccess", it.toMap()) }
+        }
+        if (params["onDDSError"] as Boolean) {
+            onDDSError = { channel.invokeMethod("onDDSError", it.toMap()) }
+        }
+        if (params["onFormSubmitted"] as Boolean) {
+            onFormSubmitted = { channel.invokeMethod("onFormSubmitted", it.toMap()) }
+        }
+        if (params["onDocumentsSubmitted"] as Boolean) {
+            onDocumentsSubmitted = { channel.invokeMethod("onDocumentsSubmitted", it.toMap()) }
+        }
+        if (params["onError"] as Boolean) {
+            onError = { channel.invokeMethod("onError", it.toMap()) }
+        }
+        if (params["onClose"] as Boolean) {
+            onClose = { channel.invokeMethod("onClose", null) }
+        }
+        if (params["onTokenExpired"] as Boolean) {
+            onTokenExpired = {
+                newTokenCallback = it
+                channel.invokeMethod("onTokenExpired", null)
+            }
+        }
+        if (params["onUiEvent"] as Boolean) {
+            onUIEvent = { channel.invokeMethod("onUiEvent", it.toMap()) }
+        }
+    }
+
+    private fun AccountData.toMap() = mapOf(
+        "accountData" to mapOf(
+            "accountId" to accountId, "userId" to userId, "itemId" to itemId
+        )
+    )
+
+    private fun FormData.toMap() = mapOf(
+        "formData" to mapOf(
+            "accountId" to accountId, "userId" to userId
+        )
+    )
+
+    private fun LinkError.toMap() = mapOf(
+        "linkError" to mapOf(
+            "errorType" to errorType.name,
+            "errorMessage" to errorMessage,
+            "errorDetails" to errorDetails
+        )
+    )
+
+    private fun UIEvent.toMap() = mapOf(
+        "uiEvent" to mapOf(
+            "name" to name, "properties" to properties
+        )
+    )
+
+    private fun provideNewToken(call: MethodCall) {
+        val token = call.argument<String>("newToken") ?:
+            throw IllegalArgumentException("newToken argument must be set")
+        newTokenCallback?.invoke(token)
     }
 
     private fun close() {
-        Argyle.instance.close()
+        ArgyleLink.close()
     }
-
-    private fun <T> Map<String, Any>.getValueOrNull(key: String): T? {
-        return this[key] as T
-    }
-
-    private fun startSdk(linkConfiguration: Map<String, Any>) {
-
-        checkNotNull(context) {
-            Log.e(TAG, "Activity not attached");
-            throw IllegalStateException("Activity not attached");
-        }
-
-        val linkKey = linkConfiguration[LINK_KEY] as String
-        val apiHost = linkConfiguration[API_HOST] as String
-        val userToken = linkConfiguration[USER_TOKEN] as String?
-
-        val config = ArgyleConfig.Builder()
-            .loginWith(linkKey, apiHost, userToken)
-
-        linkConfiguration.getValueOrNull<String>(PD_CONFIG)?.let {
-            config.payDistributionConfig(it)
-        }
-
-        linkConfiguration.getValueOrNull<List<String>>(LINK_ITEM_IDS)?.let {
-            config.linkItems(it.toTypedArray())
-        }
-
-        linkConfiguration.getValueOrNull<Boolean>(PD_ITEMS_ONLY)?.let {
-            config.payDistributionItemsOnly(it)
-        }
-
-        linkConfiguration.getValueOrNull<Boolean>(PD_UPDATE_FLOW)?.let {
-            config.payDistributionUpdateFlow(it)
-        }
-
-        linkConfiguration.getValueOrNull<Boolean>(PD_AUTO_TRIGGER)?.let {
-            config.payDistributionAutoTrigger(it)
-        }
-
-        linkConfiguration.getValueOrNull<String>(SDK_CUSTOMISATION_ID)?.let {
-            config.customizationId(it)
-        }
-
-        linkConfiguration.getValueOrNull<String>(COMPANY_NAME)?.let {
-            config.companyName(it)
-        }
-
-        linkConfiguration.getValueOrNull<String>(EXIT_BUTTON_TITLE)?.let {
-            config.exitButtonTitle(it)
-        }
-
-        linkConfiguration.getValueOrNull<String>(BACK_TO_SEARCH_BUTTON_TITLE)?.let {
-            config.backToSearchButtonTitle(it)
-        }
-
-        linkConfiguration.getValueOrNull<String>(PD_REVIEW_SCREEN_TITLE)?.let {
-            config.payDistributionReviewScreenTitle(it)
-        }
-
-        linkConfiguration.getValueOrNull<String>(PD_REVIEW_SCREEN_SUBTITLE)?.let {
-            config.payDistributionReviewScreenSubtitle(it)
-        }
-
-        linkConfiguration.getValueOrNull<Boolean>(SHOW_BACK_TO_SEARCH_BUTTON)?.let {
-            config.showBackToSearchButton(it)
-        }
-
-        linkConfiguration.getValueOrNull<Boolean>(SHOW_CATEGORIES)?.let {
-            config.showCategories(it)
-        }
-
-        linkConfiguration.getValueOrNull<List<String>>(EXCLUDE_CATEGORIES)?.let {
-            config.excludeCategories(it.toTypedArray())
-        }
-
-        linkConfiguration.getValueOrNull<String>(CANT_FIND_LINK_ITEM_TITLE)?.let {
-            config.cantFindLinkItemTitle(it)
-        }
-
-        linkConfiguration.getValueOrNull<Boolean>(SHOW_CANT_FIND_LINK_ITEM_AT_TOP)?.let {
-            config.showCantFindLinkItemAtTop(it)
-        }
-
-        linkConfiguration.getValueOrNull<Boolean>(CANT_FIND_LINK_ITEM_CALLBACK)?.let { shouldConfigureCallback ->
-            if (shouldConfigureCallback)
-                config.onCantFindLinkItemClicked { query ->
-                    Log.d(TAG, "onCantFindLinkItemClicked: query: $query")
-                    channel.invokeMethod("onCantFindLinkItemClicked", mapOf("query" to query))
-                }
-        }
-
-        config.setCallbackListener(object : Argyle.ArgyleResultListener {
-            override fun onTokenExpired(handler: (String) -> Unit) {
-                val token = "token"
-                handler(token)
-            }
-
-            override fun onAccountCreated(accountId: String, userId: String, linkItemId: String) {
-                Log.d(TAG, "onAccountCreated: accountId: $accountId userId: $userId linkItemId: $linkItemId")
-                channel.invokeMethod("onAccountCreated", mapOf("accountId" to accountId, "userId" to userId, "linkItemId" to linkItemId))
-            }
-
-            override fun onAccountConnected(accountId: String, userId: String, linkItemId: String) {
-                Log.d(TAG, "onAccountConnected: accountId: $accountId userId: $userId linkItemId: $linkItemId")
-                channel.invokeMethod(
-                    "onAccountConnected",
-                    mapOf("accountId" to accountId, "userId" to userId, "linkItemId" to linkItemId)
-                )
-            }
-
-            override fun onAccountUpdated(accountId: String, userId: String, linkItemId: String) {
-                Log.d(TAG, "onAccountUpdated: accountId: $accountId userId: $userId linkItemId: $linkItemId")
-                channel.invokeMethod(
-                    "onAccountUpdated",
-                    mapOf("accountId" to accountId, "userId" to userId, "linkItemId" to linkItemId)
-                )
-            }
-
-            override fun onAccountRemoved(accountId: String, userId: String, linkItemId: String) {
-                Log.d(TAG, "onAccountRemoved: accountId: $accountId userId: $userId linkItemId: $linkItemId")
-                channel.invokeMethod(
-                    "onAccountRemoved",
-                    mapOf("accountId" to accountId, "userId" to userId, "linkItemId" to linkItemId)
-                )
-            }
-
-            override fun onAccountError(
-                accountId: String, userId: String, linkItemId: String
-            ) {
-                Log.d(TAG, "onAccountError: accountId: $accountId userId: $userId linkItemId: $linkItemId")
-                channel.invokeMethod(
-                    "onAccountError",
-                    mapOf("accountId" to accountId, "userId" to userId, "linkItemId" to linkItemId)
-                )
-            }
-
-            override fun onError(error: ArgyleErrorType) {
-                Log.d(TAG, "onError: error: $error")
-                channel.invokeMethod("onError", mapOf("error" to error.toString()))
-            }
-
-            override fun onUserCreated(userToken: String, userId: String) {
-                channel.invokeMethod(
-                    "onUserCreated",
-                    mapOf("userToken" to userToken, "userId" to userId)
-                )
-            }
-
-            override fun onClose() {
-                Log.d(TAG, "onClose")
-                channel.invokeMethod("onClose", null)
-            }
-
-            override fun onPayDistributionError(
-                accountId: String,
-                userId: String,
-                linkItemId: String
-            ) {
-                Log.d(TAG, "onPayDistributionError: accountId: $accountId userId: $userId linkItemId: $linkItemId")
-                channel.invokeMethod(
-                    "onPayDistributionError",
-                    mapOf("accountId" to accountId, "userId" to userId, "linkItemId" to linkItemId)
-                )
-            }
-
-            override fun onPayDistributionSuccess(
-                accountId: String,
-                userId: String,
-                linkItemId: String
-            ) {
-                Log.d(TAG, "onPayDistributionSuccess: accountId: $accountId userId: $userId linkItemId: $linkItemId")
-                channel.invokeMethod(
-                    "onPayDistributionSuccess",
-                    mapOf("accountId" to accountId, "userId" to userId, "linkItemId" to linkItemId)
-                )
-            }
-
-            override fun onUIEvent(name: String, properties: Map<String, Any>) {
-                Log.d(TAG, "onUIEvent: $name, properties: $properties")
-                channel.invokeMethod("onUIEvent", mapOf("name" to name, "properties" to properties))
-            }
-
-            override fun onDocumentsSubmitted(accountId: String, userId: String) {
-                Log.d(TAG, "onDocumentsSubmitted: accountId: $accountId, userId: $userId")
-                channel.invokeMethod(
-                    "onDocumentsSubmitted",
-                    mapOf("accountId" to accountId, "userId" to userId)
-                )
-            }
-
-            override fun onFormSubmitted(accountId: String, userId: String) {
-                Log.d(TAG, "onFormSubmitted: accountId: $accountId, userId: $userId")
-                channel.invokeMethod(
-                    "onFormSubmitted",
-                    mapOf("accountId" to accountId, "userId" to userId)
-                )
-            }
-        })
-
-        Log.d(TAG, "openSdk with user token : $userToken")
-        val argyle = Argyle.instance
-        argyle.init(config.build())
-        argyle.startSDK(activity)
-    }
-
-    companion object {
-        private const val TAG = "ArgyleLinkFlutterPlugin"
-
-        /// Link Configuration Keys
-        private const val LINK_KEY = "linkKey"
-        private const val API_HOST = "apiHost"
-        private const val USER_TOKEN = "userToken"
-        private const val LINK_ITEM_IDS = "linkItems"
-        private const val PD_CONFIG = "payDistributionConfig"
-        private const val PD_ITEMS_ONLY = "payDistributionItemsOnly"
-        private const val PD_UPDATE_FLOW = "payDistributionUpdateFlow"
-        private const val PD_AUTO_TRIGGER = "payDistributionAutoTrigger"
-        private const val SDK_CUSTOMISATION_ID = "customizationId"
-        private const val COMPANY_NAME = "companyName"
-        private const val EXIT_BUTTON_TITLE = "exitButtonTitle"
-        private const val EXCLUDE_CATEGORIES = "excludeCategories"
-        private const val SHOW_CATEGORIES = "showCategories"
-        private const val SHOW_BACK_TO_SEARCH_BUTTON = "showBackToSearchButton"
-        private const val PD_REVIEW_SCREEN_SUBTITLE = "pdReviewScreenSubtitle"
-        private const val PD_REVIEW_SCREEN_TITLE = "pdReviewScreenTitle"
-        private const val BACK_TO_SEARCH_BUTTON_TITLE = "backToSearchButtonTitle"
-        private const val CANT_FIND_LINK_ITEM_TITLE = "cantFindLinkItemTitle"
-        private const val SHOW_CANT_FIND_LINK_ITEM_AT_TOP = "showCantFindLinkItemAtTop"
-        private const val CANT_FIND_LINK_ITEM_CALLBACK = "cantFindLinkItemCallback"
-    }
-
 }

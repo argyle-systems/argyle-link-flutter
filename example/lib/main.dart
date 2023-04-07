@@ -1,6 +1,8 @@
-import 'package:argyle_link_flutter/argyle.dart';
+import 'package:argyle_link_flutter/account_data.dart';
+import 'package:argyle_link_flutter/argyle_link.dart';
+import 'package:argyle_link_flutter/form_data.dart';
+import 'package:argyle_link_flutter/link_config.dart';
 import 'package:flutter/material.dart';
-import 'dart:async';
 
 void main() {
   runApp(const MyApp());
@@ -14,29 +16,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final Map<String, String> sdkCallbackEvents = {};
-
-  @override
-  void initState() {
-    super.initState();
-    initPlatformState();
-  }
-
-  Future<void> initPlatformState() async {
-    if (!mounted) return;
-  }
-
-  void addSdkCallbackEventToList(String eventName, [String eventParams = ""]) {
-    setState(() {
-      sdkCallbackEvents[eventName] =  eventParams;
-    });
-  }
-
-  void clearCallbackList() {
-    setState(() {
-      sdkCallbackEvents.clear();
-    });
-  }
+  String log = '';
 
   @override
   Widget build(BuildContext context) {
@@ -45,143 +25,105 @@ class _MyAppState extends State<MyApp> {
         appBar: AppBar(
           title: const Text('Argyle Flutter App'),
         ),
-        body: Column(children: <Widget>[
-          const SizedBox(height: 10),
-          const Text(
-              "Callback Log",
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)
+        body: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const Text(
+                'Callback Log',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
+              ),
+              Expanded(
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: Text(log),
+                ),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  startArgyleSdk();
+                },
+                child: const Text('Start Argyle SDK'),
+              )
+            ],
           ),
-          Expanded(
-              child: ListView.builder(
-                  padding: const EdgeInsets.all(8),
-                  itemCount: sdkCallbackEvents.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    String key = sdkCallbackEvents.keys.elementAt(index);
-
-                    return Container(
-                        padding: const EdgeInsets.all(8),
-                        margin: const EdgeInsets.all(2),
-                        color: Colors.grey[400],
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                                "Callback: $key",
-                                style: const TextStyle(fontSize: 20, color: Colors.black45, fontWeight: FontWeight.bold)
-                            ),
-                            const SizedBox(height: 10),
-                            const Text(
-                                "Params:",
-                                style: TextStyle(fontSize: 18)
-                            ),
-                            Text(
-                                "${sdkCallbackEvents[key]}",
-                                style: const TextStyle(fontSize: 14, color: Colors.black45)
-                            )
-                          ],
-                        )
-                    );
-                  })),
-          ElevatedButton(
-              onPressed: () {
-                clearCallbackList();
-                startArgyleSdk();
-              },
-              child: const Text('Start Argyle SDK'))
-        ]),
+        ),
       ),
     );
   }
 
-  void startArgyleSdk() {
-    Argyle.startSdk(
-        configuration: createConfig(),
-        onAccountConnected: onAccountConnectedHandler,
-        onAccountCreated: onAccountCreatedHandler,
-        onAccountRemoved: onAccountRemovedHandler,
-        onAccountUpdated: onAccountUpdatedHandler,
-        onAccountError: onAccountErrorHandler,
-        onUserCreated: onUserCreatedHandler,
-        onPayDistributionError: onPayDistributionErrorHandler,
-        onPayDistributionSuccess: onPayDistributionSuccessHandler,
-        onUIEvent: onUiEventHandler,
-        onDocumentsSubmitted: onDocumentsSubmittedHandler,
-        onFormSubmitted: onFormSubmittedHandler,
-        onError: onErrorHandler,
-        onClose: () {},
-        // onCantFindLinkItemClicked: onCantFindLinkItemClicked
+  startArgyleSdk() {
+    final config = createLinkConfig();
+    ArgyleLink.start(config);
+  }
+
+  createLinkConfig() => LinkConfig(
+        linkKey: 'YOUR_LINK_KEY',     // Get it from https://console.argyle.com/link-key
+        userToken: 'YOUR_USER_TOKEN', // Should be fetched and provided by your own backend API https://argyle.com/docs/api-reference/users
+        sandbox: true,
+
+        // accountId: 'USER_ACCOUNT_ID', // Specify to take the user directly to the account
+        // flowId: '00000000',           // Specify to use flows https://argyle.com/docs/console/flows
+        // ddsConfig: 'YOUR_DDS_CONFIG', // Specify to use deposit switching https://argyle.com/docs/workflows/deposit-switching
+        // items: ['item_000014039', 'item_000025742'], // Specify to limit search to the specified items only
+
+        onTokenExpired: (handler) {
+          const newToken = 'YOUR_NEW_TOKEN';
+          handler(newToken);
+        },
+        onAccountCreated: (accountData) =>
+            logCallbackWithAccountData('onAccountCreated', accountData),
+        onAccountConnected: (accountData) =>
+            logCallbackWithAccountData('onAccountConnected', accountData),
+        onAccountRemoved: (accountData) =>
+            logCallbackWithAccountData('onAccountRemoved', accountData),
+        onAccountError: (accountData) =>
+            logCallbackWithAccountData('onAccountError', accountData),
+        onDDSSuccess: (accountData) =>
+            logCallbackWithAccountData('onDDSSuccess', accountData),
+        onDDSError: (accountData) =>
+            logCallbackWithAccountData('onDDSError', accountData),
+        onFormSubmitted: (formData) =>
+            logCallbackWithFormData('onFormSubmitted', formData),
+        onDocumentsSubmitted: (formData) =>
+            logCallbackWithFormData('onDocumentsSubmitted', formData),
+        onError: (linkError) => appendLogMessage(
+          'onError(\n'
+          '\terrorType: ${linkError.errorType.name}\n'
+          '\terrorMessage: ${linkError.errorMessage}\n'
+          '${linkError.errorDetails != null ? '\terrorDetails: ${linkError.errorDetails}\n' : ''}'
+          ')',
+        ),
+        onClose: () => appendLogMessage('onClose'),
+        onUiEvent: (uiEvent) {
+          final props = uiEvent.properties?.entries
+              .map((e) => '\t\t${e.key}: ${e.value}')
+              .join('\n');
+          appendLogMessage(
+            'onUIEvent(\n'
+            '\tname: ${uiEvent.name}\n'
+            '\tproperties:\n$props\n'
+            ')',
+          );
+        },
       );
+
+  logCallbackWithAccountData(String callbackName, AccountData accountData) {
+    appendLogMessage('$callbackName: accountId: ${accountData.accountId} '
+        'userId: ${accountData.userId} '
+        'itemId: ${accountData.itemId}');
   }
 
-  onUiEventHandler(String name, Map<String, Object> properties) {
-    addSdkCallbackEventToList(
-        "onUIEvent", name + " " + properties.toString());
+  logCallbackWithFormData(String callbackName, FormData formData) {
+    appendLogMessage('$callbackName: accountId: ${formData.accountId} '
+        'userId: ${formData.userId}');
   }
 
-  onPayDistributionSuccessHandler(String accountId, String userId, String linkItemId) {
-    addSdkCallbackEventToList("onPayDistributionSuccess", getFormattedParams(accountId, userId, linkItemId));
+  appendLogMessage(String message) {
+    setState(() {
+      log += '$message\n';
+    });
   }
-
-  onPayDistributionErrorHandler(String accountId, String userId, String linkItemId) {
-    addSdkCallbackEventToList("onPayDistributionError", getFormattedParams(accountId, userId, linkItemId));
-  }
-
-  onErrorHandler(String errorCode) {
-    addSdkCallbackEventToList("onError", "ErrorCode: $errorCode");
-  }
-
-  onUserCreatedHandler(String userToken, String userId) {
-    addSdkCallbackEventToList(
-        "onUserCreated", "UserToken: $userToken \nUserId: $userId");
-  }
-
-  onAccountErrorHandler(String accountId, String userId, String linkItemId) {
-    addSdkCallbackEventToList("onAccountError", getFormattedParams(accountId, userId, linkItemId));
-  }
-
-  onAccountCreatedHandler(String accountId, String userId, String linkItemId) {
-    addSdkCallbackEventToList("onAccountCreated", getFormattedParams(accountId, userId, linkItemId));
-  }
-
-  onAccountConnectedHandler(String accountId, String userId, String linkItemId) {
-    addSdkCallbackEventToList("onAccountConnected", getFormattedParams(accountId, userId, linkItemId));
-  }
-
-  onAccountRemovedHandler(String accountId, String userId, String linkItemId) {
-    addSdkCallbackEventToList("onAccountRemoved", getFormattedParams(accountId, userId, linkItemId));
-  }
-
-  onAccountUpdatedHandler(String accountId, String userId, String linkItemId) {
-    addSdkCallbackEventToList("onAccountUpdated", getFormattedParams(accountId, userId, linkItemId));
-  }
-
-  onDocumentsSubmittedHandler(String accountId, String userId) {
-    addSdkCallbackEventToList(
-        "onDocumentsSubmitted", "AccountId: $accountId \nUserId: $userId");
-  }
-
-  onFormSubmittedHandler(String accountId, String userId) {
-    addSdkCallbackEventToList(
-        "onFormSubmittedHandler", "AccountId: $accountId \nUserId: $userId");
-  }
-
-  onCantFindLinkItemClicked(String query) {
-    addSdkCallbackEventToList("onCantFindLinkItemClicked", "Query: $query");
-  }
-}
-
-getFormattedParams(String accountId, String userId, String linkItemId) {
-  return "AccountID: $accountId \nUserId: $userId \nLinkItemId: $linkItemId";
-}
-
-createConfig() {
-  return <String, Object>{
-    'linkKey': 'YOUR-LINK-KEY',
-    'apiHost': 'https://api-sandbox.argyle.io/v1/',
-    // 'linkItems' : ['kroger', 'uber'],
-    // 'customizationId' : 'CREATE A CUSTOMISATION IN CONSOLE',
-    // 'payDistributionItemsOnly' : false,
-    // 'showCantFindLinkItemAtTop' : false
-    // 'payDistributionConfig' : 'CiQAzxhtktpPeu3esWpJA7+Ka8ru9jJCzZ04ZH/HxGX7G2X6wwUSjwIAW+ch9IEKQpwr20FhPEtN/z261Lh2PqN4NpO9t3FeYWA7iKBUmQwoE9TOqz3UErv43uK+5BqluRw2ZYpviPEMZilCVOi1Mg3cwLFNkVypkJ+++z1/I4Mb7mZSheosaCrBQv7cfkvJoFsiC9mS0VXC0Uj1Wqwr+GsNC5qf8JE5ZYi1RBHTteNWL27625YiUSPROVtiSeS87r1amXx0dHb/e2SvQ1nG4V2pcsOKeh+262ySbWUsHBqIN/60LODMtu4C4UXI5GhqfvGTj9fbPnF1qwIpCqFEcsBPrFDKtOoXJBeIuWupT3gOA2sbY+iypua2BtgSUqprSu7GMJwrP1Apk8aYm1WtXwhXAJYH7ve6'
-  };
 }

@@ -31,9 +31,19 @@ public class SwiftArgyleLinkFlutterPlugin: NSObject, FlutterPlugin {
         case "close":
             closeSdk()
             result("")
+        case "provideNewToken":
+            provideNewToken(args: call.arguments)
+            result("")
         default:
             result(FlutterMethodNotImplemented)
         }
+    }
+
+    private func provideNewToken(args: Any?) {
+        guard let token = (args as? [String: Any])?["newToken"] as? String else {
+            fatalError("newToken argument must be set")
+        }
+        newTokenCallback?(token)
     }
 
     private func startSdk(_ linkConfiguration: [String: Any]) {

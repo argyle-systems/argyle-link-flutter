@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:argyle_link_flutter/account_data.dart';
 import 'package:argyle_link_flutter/argyle_link.dart';
 import 'package:argyle_link_flutter/form_data.dart';
@@ -18,6 +20,8 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   String log = '';
 
+  final jsonConfigInputController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -30,6 +34,17 @@ class _MyAppState extends State<MyApp> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              const Text(
+                'Json Config',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
+              ),
+              TextField(
+                controller: jsonConfigInputController,
+                style: TextStyle(fontSize: 12),
+                keyboardType: TextInputType.multiline,
+                maxLines: 10,
+              ),
               const Text(
                 'Callback Log',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
@@ -55,60 +70,95 @@ class _MyAppState extends State<MyApp> {
   }
 
   startArgyleSdk() {
+    clearLog();
+
+    final jsonConfig = jsonConfigInputController.text;
+    if (!jsonConfig.isEmpty) {
+      startArgyleSdkFromJson(jsonConfig);
+      return;
+    }
+
     final config = createLinkConfig();
+    configCallbacks(config, true);
     ArgyleLink.start(config);
   }
 
   createLinkConfig() => LinkConfig(
-        linkKey: 'YOUR_LINK_KEY',     // Get it from https://console.argyle.com/link-key
-        userToken: 'YOUR_USER_TOKEN', // Should be fetched and provided by your own backend API https://argyle.com/docs/api-reference/users
-        sandbox: true,
+    linkKey: 'YOUR_LINK_KEY',     // Get it from https://console.argyle.com/link-key
+    userToken: 'YOUR_USER_TOKEN', // Should be fetched and provided by your own backend API https://argyle.com/docs/api-reference/users
+    sandbox: true,
 
-        // accountId: 'USER_ACCOUNT_ID', // Specify to take the user directly to the account
-        // flowId: '00000000',           // Specify to use flows https://argyle.com/docs/console/flows
-        // ddsConfig: 'YOUR_DDS_CONFIG', // Specify to use deposit switching https://argyle.com/docs/workflows/deposit-switching
-        // items: ['item_000014039', 'item_000025742'], // Specify to limit search to the specified items only
+    // accountId: 'USER_ACCOUNT_ID', // Specify to take the user directly to the account
+    // flowId: '00000000',           // Specify to use flows https://argyle.com/docs/console/flows
+    // ddsConfig: 'YOUR_DDS_CONFIG', // Specify to use deposit switching https://argyle.com/docs/workflows/deposit-switching
+    // items: ['item_000014039', 'item_000025742'], // Specify to limit search to the specified items only
+  );
 
-        onTokenExpired: (handler) {
-          const newToken = 'YOUR_NEW_TOKEN';
-          handler(newToken);
-        },
-        onAccountCreated: (accountData) =>
-            logCallbackWithAccountData('onAccountCreated', accountData),
-        onAccountConnected: (accountData) =>
-            logCallbackWithAccountData('onAccountConnected', accountData),
-        onAccountRemoved: (accountData) =>
-            logCallbackWithAccountData('onAccountRemoved', accountData),
-        onAccountError: (accountData) =>
-            logCallbackWithAccountData('onAccountError', accountData),
-        onDDSSuccess: (accountData) =>
-            logCallbackWithAccountData('onDDSSuccess', accountData),
-        onDDSError: (accountData) =>
-            logCallbackWithAccountData('onDDSError', accountData),
-        onFormSubmitted: (formData) =>
-            logCallbackWithFormData('onFormSubmitted', formData),
-        onDocumentsSubmitted: (formData) =>
-            logCallbackWithFormData('onDocumentsSubmitted', formData),
-        onError: (linkError) => appendLogMessage(
-          'onError(\n'
-          '\terrorType: ${linkError.errorType.name}\n'
-          '\terrorMessage: ${linkError.errorMessage}\n'
-          '${linkError.errorDetails != null ? '\terrorDetails: ${linkError.errorDetails}\n' : ''}'
-          ')',
-        ),
-        onClose: () => appendLogMessage('onClose'),
-        onUiEvent: (uiEvent) {
-          final props = uiEvent.properties?.entries
-              .map((e) => '\t\t${e.key}: ${e.value}')
-              .join('\n');
-          appendLogMessage(
-            'onUIEvent(\n'
-            '\tname: ${uiEvent.name}\n'
-            '\tproperties:\n$props\n'
-            ')',
-          );
-        },
+  configCallbacks(LinkConfig config, bool setOnCantFindItemClicked) {
+    config.onTokenExpired = (handler) {
+      const newToken = 'YOUR_NEW_TOKEN';
+      handler(newToken);
+    };
+    config.onAccountCreated = (accountData) =>
+      logCallbackWithAccountData('onAccountCreated', accountData);
+    config.onAccountConnected = (accountData) =>
+      logCallbackWithAccountData('onAccountConnected', accountData);
+    config.onAccountRemoved = (accountData) =>
+      logCallbackWithAccountData('onAccountRemoved', accountData);
+    config.onAccountError = (accountData) =>
+      logCallbackWithAccountData('onAccountError', accountData);
+    config.onDDSSuccess = (accountData) =>
+      logCallbackWithAccountData('onDDSSuccess', accountData);
+    config.onDDSError = (accountData) =>
+      logCallbackWithAccountData('onDDSError', accountData);
+    config.onFormSubmitted = (formData) =>
+      logCallbackWithFormData('onFormSubmitted', formData);
+    config.onDocumentsSubmitted = (formData) =>
+      logCallbackWithFormData('onDocumentsSubmitted', formData);
+    if (setOnCantFindItemClicked) {
+      config.onCantFindItemClicked = (term) =>
+        appendLogMessage('onCantFindItemClicked(${term})');
+    }
+    config.onError = (linkError) => appendLogMessage(
+      'onError(\n'
+      '\terrorType: ${linkError.errorType.name}\n'
+      '\terrorMessage: ${linkError.errorMessage}\n'
+      '${linkError.errorDetails != null ? '\terrorDetails: ${linkError.errorDetails}\n' : ''}'
+      ')',
+    );
+    config.onClose = () => appendLogMessage('onClose');
+    config.onUiEvent = (uiEvent) {
+      final props = uiEvent.properties?.entries
+          .map((e) => '\t\t${e.key}: ${e.value}')
+          .join('\n');
+      appendLogMessage(
+        'onUIEvent(\n'
+        '\tname: ${uiEvent.name}\n'
+        '\tproperties:\n$props\n'
+        ')',
       );
+    };
+  }
+
+  startArgyleSdkFromJson(String json) {
+    final params = jsonDecode(json);
+    final config = createConfigFromJson(params);
+    appendLogMessage('${config.linkKey}');
+    configCallbacks(config, params['onCantFindItemClicked'] == true);
+    ArgyleLink.start(config);
+  }
+
+  createConfigFromJson(Map params) =>
+    LinkConfig(
+      linkKey: params['linkKey'],
+      userToken: params['userToken'],
+      sandbox: true,
+      items: params['items'],
+      accountId: params['accountId'],
+      flowId: params['flowId'],
+      ddsConfig: params['ddsConfig'],
+      apiHost: params['apiHost']
+    );
 
   logCallbackWithAccountData(String callbackName, AccountData accountData) {
     appendLogMessage('$callbackName: accountId: ${accountData.accountId} '
@@ -126,4 +176,6 @@ class _MyAppState extends State<MyApp> {
       log += '$message\n';
     });
   }
+
+  clearLog() => setState(() { log = ''; });
 }

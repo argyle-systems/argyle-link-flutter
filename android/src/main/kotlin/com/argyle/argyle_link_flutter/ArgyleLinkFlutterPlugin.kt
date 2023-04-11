@@ -74,6 +74,7 @@ class ArgyleLinkFlutterPlugin : FlutterPlugin, ActivityAware, MethodCallHandler 
         flowId = params["flowId"] as String?
         ddsConfig = params["ddsConfig"] as String?
 
+        apiHost = params["apiHost"] as String?
         wrapperSdk = "Flutter"
 
         if (params["onCantFindItemClicked"] as Boolean) {

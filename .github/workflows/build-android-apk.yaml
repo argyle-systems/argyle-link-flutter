@@ -1,0 +1,31 @@
+name: build-android-apk
+on:
+  push:
+    branches:
+    - ci-build-artifacts
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - uses: actions/setup-java@v2
+      with:
+        distribution: 'zulu'
+        java-version: '11'
+
+    - name: Install Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.7.10'
+        channel: 'stable'
+
+    - run: pushd example; flutter pub get
+
+    - run: pushd example; flutter build apk --release
+
+    - name: Archive APK
+      uses: actions/upload-artifact@v3
+      with:
+        name: apk-app-release
+        path: example/build/app/outputs/flutter-apk/app-release.apk

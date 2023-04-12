@@ -10,24 +10,26 @@ class LinkConfig {
   final String userToken;
   final bool sandbox;
 
-  final List<String>? items;
-  final String? accountId;
-  final String? flowId;
-  final String? ddsConfig;
+  List<String>? items;
+  String? accountId;
+  String? flowId;
+  String? ddsConfig;
 
-  final Function(String)? onCantFindItemClicked;
-  final Function(AccountData)? onAccountCreated;
-  final Function(AccountData)? onAccountConnected;
-  final Function(AccountData)? onAccountRemoved;
-  final Function(AccountData)? onAccountError;
-  final Function(AccountData)? onDDSSuccess;
-  final Function(AccountData)? onDDSError;
-  final Function(FormData)? onFormSubmitted;
-  final Function(FormData)? onDocumentsSubmitted;
-  final Function(LinkError)? onError;
-  final Function()? onClose;
-  final Function(Function(String))? onTokenExpired;
-  final Function(UIEvent)? onUiEvent;
+  String? apiHost;
+
+  Function(String)? onCantFindItemClicked;
+  Function(AccountData)? onAccountCreated;
+  Function(AccountData)? onAccountConnected;
+  Function(AccountData)? onAccountRemoved;
+  Function(AccountData)? onAccountError;
+  Function(AccountData)? onDDSSuccess;
+  Function(AccountData)? onDDSError;
+  Function(FormData)? onFormSubmitted;
+  Function(FormData)? onDocumentsSubmitted;
+  Function(LinkError)? onError;
+  Function()? onClose;
+  Function(Function(String))? onTokenExpired;
+  Function(UIEvent)? onUiEvent;
 
   LinkConfig({
     required this.linkKey,
@@ -37,6 +39,7 @@ class LinkConfig {
     this.accountId,
     this.flowId,
     this.ddsConfig,
+    this.apiHost,
     this.onCantFindItemClicked,
     this.onAccountCreated,
     this.onAccountConnected,
@@ -51,22 +54,4 @@ class LinkConfig {
     this.onTokenExpired,
     this.onUiEvent,
   });
-
-  static LinkConfig fromJson(
-    String json,
-    Function(String)? onCantFindItemClicked,
-  ) {
-    final params = jsonDecode(json);
-    return LinkConfig(
-      linkKey: params['linkKey'],
-      userToken: params['userToken'],
-      sandbox: params['sandbox'],
-      items: params['items'],
-      accountId: params['accountId'],
-      flowId: params['flowId'],
-      ddsConfig: params['ddsConfig'],
-      onCantFindItemClicked:
-          params['onCantFindItemClicked'] ? onCantFindItemClicked : null,
-    );
-  }
 }

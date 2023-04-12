@@ -68,6 +68,9 @@ public class SwiftArgyleLinkFlutterPlugin: NSObject, FlutterPlugin {
         config.flowId = params["flowId"] as? String
         config.ddsConfig = params["ddsConfig"] as? String
 
+        config.baseUrl = params["apiHost"] as? String
+        config.wrapperSdk = "Flutter"
+
         if (params["onTokenExpired"] as? Bool) == true {
             config.onTokenExpired = { [weak self] callback in
                 self?.newTokenCallback = callback

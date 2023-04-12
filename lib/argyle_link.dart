@@ -20,6 +20,7 @@ class ArgyleLink {
       'accountId': config.accountId,
       'flowId': config.flowId,
       'ddsConfig': config.ddsConfig,
+      'apiHost': config.apiHost,
       'onCantFindItemClicked': config.onCantFindItemClicked != null,
       'onAccountCreated': config.onAccountCreated != null,
       'onAccountConnected': config.onAccountConnected != null,

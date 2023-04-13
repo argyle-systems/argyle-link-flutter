@@ -43,7 +43,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "com.argyle.argyle_link_flutter_example"
+        applicationId "com.argyle.demo.development.release"
         minSdkVersion 26
         targetSdkVersion 33
         versionCode flutterVersionCode.toInteger()
@@ -57,7 +57,7 @@ android {
             signingConfig signingConfigs.debug
         }
     }
-    namespace 'com.argyle.argyle_link_flutter_example'
+    namespace 'com.argyle.demo.development.release'
 }
 
 flutter {

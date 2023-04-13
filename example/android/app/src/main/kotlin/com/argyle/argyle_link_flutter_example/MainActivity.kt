@@ -1,4 +1,4 @@
-package com.argyle.argyle_link_flutter_example
+package com.argyleexample
 
 import io.flutter.embedding.android.FlutterActivity
 

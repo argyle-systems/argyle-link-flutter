@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:argyle_link_flutter/account_data.dart';
 import 'package:argyle_link_flutter/form_data.dart';
 import 'package:argyle_link_flutter/link_error.dart';

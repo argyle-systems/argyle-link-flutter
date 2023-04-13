@@ -4,7 +4,7 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'argyle_link_flutter'
-  s.version          = '0.0.9'
+  s.version          = '1.0.0-beta'
   s.summary          = 'A new flutter plugin project.'
   s.description      = <<-DESC
 A new flutter plugin project.

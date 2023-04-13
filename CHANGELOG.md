@@ -1,3 +1,37 @@
+## 1.0.0-beta
+
+Minimum requirements
+
+- Android minSdkVersion: `26`
+- iOS version: `14.0`
+
+Added
+
+- Photo capture now available during document upload
+- Payroll connections disallowed when an Item's deposit switching capabilities do not support the provided `ddsConfig`
+- `onError` callback now returns `errorType`, `errorMessage`, and `errorDetails`
+- Errors added: `dds_not_supported`, `incompatible_dds_config`, `invalid_account_id`
+- SDK Typescript typings
+
+Breaking changes
+
+- New required `sandbox` initialization parameter: `true` for Sandbox, `false` for Production
+- Previously optional `userToken` initialization parameter now required
+- Previously required `apiHost` initialization parameter removed
+- `accountId` must be used for deep linking to existing accounts
+
+Renamed
+
+- Initialization parameters: `payDistributionConfig` to `ddsConfig`, `linkItems` to `items`
+- Callbacks: `onCantFindLinkItemClicked` to `onCantFindItemClicked`, `onPayDistributionError` to `onDDSError`, `onPayDistributionSuccess` to `onDDSSuccess`
+- Errors: `invalid_link_items` to `invalid_items`, `invalid_pd_config` to `invalid_dds_config`
+
+Deprecations
+
+- Previously optional initializations parameters removed: `companyName`, `showCloseButton`, `closeOnOutsideClick`, `excludeCategories`, `excludeLinkItems`, `payDistributionItemsOnly`, `showCategories`, `exitButtonTitle`, `showBackToSearchButton`, `backToSearchButtonTitle`, `showCantFindLinkItemAtTop`, `payDistributionReviewScreenTitle`, `payDistributionReviewScreenSubtitle`, `payDistributionUpdateFlow`, `payDistributionAutoTrigger`
+- Callbacks removed: `onAccountUpdated`, `onUserCreated`
+
+
 ## 0.0.9
 
 Bumped native iOS/Android SDKs to 4.7.0/4.7.2 versions correspondingly.

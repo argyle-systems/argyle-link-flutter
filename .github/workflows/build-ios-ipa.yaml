@@ -2,7 +2,7 @@ name: build-ios-ipa
 on:
   push:
     branches:
-    - ci-build-ios-artifacts
+    - master
 jobs:
   build:
     runs-on: macos-latest

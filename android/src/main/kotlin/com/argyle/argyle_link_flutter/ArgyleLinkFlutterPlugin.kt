@@ -71,6 +71,7 @@ class ArgyleLinkFlutterPlugin : FlutterPlugin, ActivityAware, MethodCallHandler 
     ).apply {
         items = params["items"] as List<String>?
         accountId = params["accountId"] as String?
+        customizationId = params["customizationId"] as String?
         flowId = params["flowId"] as String?
         ddsConfig = params["ddsConfig"] as String?
 

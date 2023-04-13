@@ -176,6 +176,7 @@ class _MyAppState extends State<MyApp> {
       sandbox: true,
       items: params['items'],
       accountId: params['accountId'],
+      customizationId: params['customizationId'],
       flowId: params['flowId'],
       ddsConfig: params['ddsConfig'],
       apiHost: params['apiHost']

@@ -18,6 +18,7 @@ class ArgyleLink {
       'sandbox': config.sandbox,
       'items': config.items,
       'accountId': config.accountId,
+      'customizationId': config.customizationId,
       'flowId': config.flowId,
       'ddsConfig': config.ddsConfig,
       'apiHost': config.apiHost,

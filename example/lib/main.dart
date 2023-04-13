@@ -5,6 +5,7 @@ import 'package:argyle_link_flutter/argyle_link.dart';
 import 'package:argyle_link_flutter/form_data.dart';
 import 'package:argyle_link_flutter/link_config.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 void main() {
   runApp(const MyApp());
@@ -34,10 +35,30 @@ class _MyAppState extends State<MyApp> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const Text(
-                'Json Config',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                textAlign: TextAlign.center,
+              Row(
+                children: [
+                  const Text(
+                    'Json Config',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(width: 4),
+                  ElevatedButton(
+                    onPressed: () {
+                      jsonConfigInputController.text = "";
+                    },
+                    child: const Text('clear'),
+                  ),
+                  SizedBox(width: 4),
+                  ElevatedButton(
+                    onPressed: () {
+                      Clipboard.getData(Clipboard.kTextPlain).then((value) {
+                        jsonConfigInputController.text = value?.text ?? "";
+                      });
+                    },
+                    child: const Text('paste'),
+                  )
+                ]
               ),
               TextField(
                 controller: jsonConfigInputController,

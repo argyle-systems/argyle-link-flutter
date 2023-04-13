@@ -20,27 +20,40 @@ Add `argyle_link_flutter` as a [dependency in your pubspec.yaml file](https://fl
 ### 2. Set your Link API Key and start the SDK
 
 ``` dart
-...
+import 'package:argyle_link_flutter/link_config.dart';
+// (Optional) Callback argument type definitions
+import 'package:argyle_link_flutter/account_data.dart';
+import 'package:argyle_link_flutter/argyle_link.dart';
+import 'package:argyle_link_flutter/form_data.dart';
 
-Argyle.startSdk(
-        configuration: <String, Object>{
-          'linkKey': '[YOUR LINK API KEY]'
-        },
-        onAccountConnected: onAccountConnectedHandler,
-        onAccountCreated: onAccountCreatedHandler,
-        onAccountRemoved: onAccountRemovedHandler,
-        onAccountUpdated: onAccountUpdatedHandler,
-        onAccountError: onAccountErrorHandler,
-        onUserCreated: onUserCreatedHandler,
-        onPayDistributionError: onPayDistributionErrorHandler,
-        onPayDistributionSuccess: onPayDistributionSuccessHandler,
-        onUIEvent: onUiEventHandler,
-        onDocumentsSubmitted: onDocumentsSubmittedHandler,
-        onFormSubmitted: onFormSubmittedHandler,
-        onError: onErrorHandler,
-        onClose: () {});
+// ...
 
-...
+final config = LinkConfig(
+  linkKey: 'YOUR_LINK_KEY',
+  userToken: 'USER_TOKEN',
+  sandbox: true, // Set it to false for production environment.
+  // (Optional) Add a Link flow customization created in Console:
+  //    flowId: '<ID of the Link flow>',
+  // (Optional) Add a deposit switch flow:
+  //    ddsConfig: '<Encrypted target deposit destination value>',
+  // (Optional) Limit Link search to specific Items:
+  //    items: ['item_000001422', 'item_000025742'],
+  // (Optional) Connect directly to an existing account:
+  //    accountId: '<ID of the account>',
+  // (Optional) Callback examples:
+  onAccountConnected: (payload) => debugPrint('onAccountConnected'),
+  onAccountError: (payload) => debugPrint('onAccountError'),
+  onDDSSuccess: (payload) => debugPrint('onDDSSuccess'),
+  onDDSError: (payload) => debugPrint('onDDSError'),
+  onTokenExpired: (updateToken) => {
+    debugPrint('onTokenExpired')
+    // Generate a new user token.
+    // updateToken(newToken)
+  },
+);
+ArgyleLink.start(config);
+
+// ArgyleLink.close()   // Manually close Link (typically the user closes Link).
 
 ```
 
@@ -50,8 +63,8 @@ For detailed guidance on how to integrate our SDK please review the example app 
 
 ### iOS Requirements
 
-- Xcode 13.0+
-- iOS 12.0+
+- Xcode 14.0+
+- iOS 14.0+
 
 ### Android Requirements
 
@@ -60,7 +73,7 @@ Set the `minSdkVersion` in `android/app/build.gradle`:
 ```groovy
 android {
     defaultConfig {
-        minSdkVersion 23 // or greater
+        minSdkVersion 26 // or greater
     }
 }
 ```

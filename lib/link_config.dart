@@ -12,8 +12,6 @@ class LinkConfig {
 
   List<String>? items;
   String? accountId;
-  @Deprecated('Use flowId instead')
-  String? customizationId;
   String? flowId;
   String? ddsConfig;
 
@@ -39,7 +37,6 @@ class LinkConfig {
     required this.sandbox,
     this.items,
     this.accountId,
-    this.customizationId,
     this.flowId,
     this.ddsConfig,
     this.apiHost,

@@ -65,7 +65,6 @@ public class SwiftArgyleLinkFlutterPlugin: NSObject, FlutterPlugin {
         )
         config.items = params["items"] as? [String]
         config.accountId = params["accountId"] as? String
-        config.customizationId = params["customizationId"] as? String
         config.flowId = params["flowId"] as? String
         config.ddsConfig = params["ddsConfig"] as? String
 

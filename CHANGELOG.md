@@ -1,3 +1,10 @@
+## 1.0.1
+
+Fixed
+
+* [iOS] Closing Link after deep linking to a Grouping item
+* [iOS] Minor UI issues
+
 ## 1.0.0
 
 Minimum requirements

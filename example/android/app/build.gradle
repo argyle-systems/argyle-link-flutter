@@ -26,6 +26,8 @@ apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
+    namespace 'com.argyle'
+
     compileSdkVersion flutter.compileSdkVersion
 
     compileOptions {
@@ -57,7 +59,6 @@ android {
             signingConfig signingConfigs.debug
         }
     }
-    namespace 'com.argyle.demo.development.release'
 }
 
 flutter {

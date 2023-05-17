@@ -1,3 +1,16 @@
+## 1.1.0
+
+Added
+
+* The ability to fully customize which tabs (Popular, Employer, Gig, Benefits, Payroll) appear on the home screen of Link's search experience.
+* Recommendations for the Popular tab can now be chosen manually.
+* Additional selections are available when the user is searching for a payroll provider.
+* Users can be given the option to return to the search screen even if they are directly connected to a specific employer or payroll provider.
+
+Fixed
+
+Various UI and stability issues
+
 ## 1.0.1
 
 Fixed

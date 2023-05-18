@@ -174,7 +174,7 @@ class _MyAppState extends State<MyApp> {
       linkKey: params['linkKey'],
       userToken: params['userToken'],
       sandbox: true,
-      items: params['items'],
+      items: (params['items'] as List<dynamic>?)?.cast<String>(),
       accountId: params['accountId'],
       flowId: params['flowId'],
       ddsConfig: params['ddsConfig'],

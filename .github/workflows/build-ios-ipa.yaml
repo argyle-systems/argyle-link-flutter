@@ -9,30 +9,12 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: Setup build identity
-      env:
-        BUILD_CERT_BASE64: ${{ secrets.BUILD_ID_CERT_BASE64 }}
-        BUILD_CERT_PASS: ${{ secrets.BUILD_ID_CERT_PASS }}
-        BUILD_PROVISIONING: ${{ secrets.BUILD_ID_PROVISIONING }}
-        KEYCHAIN_PASS: ${{ secrets.BUILD_ID_KEYCHAIN_PASS }}
-      run: |
-        # create variables
-        BUILD_CERT_PATH=$RUNNER_TEMP/build_certificate.p12
-        BUILD_PP_PATH=$RUNNER_TEMP/build_pp.mobileprovision
-        KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
-        # import certificate and provisioning profile from secrets
-        echo -n "$BUILD_CERT_BASE64" | base64 --decode --output $BUILD_CERT_PATH
-        echo -n "$BUILD_PROVISIONING" | base64 --decode --output $BUILD_PP_PATH
-        # create temporary keychain
-        security create-keychain -p "$KEYCHAIN_PASS" $KEYCHAIN_PATH
-        security set-keychain-settings -lut 21600 $KEYCHAIN_PATH
-        security unlock-keychain -p "$KEYCHAIN_PASS" $KEYCHAIN_PATH
-        # import certificate to keychain
-        security import $BUILD_CERT_PATH -P "$BUILD_CERT_PASS" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
-        security list-keychain -d user -s $KEYCHAIN_PATH
-        # apply provisioning profile
-        mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-        cp $BUILD_PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles
+    - uses: argyle-systems/argyle-link-github-actions/setup-ios-build-identity@main
+      with:
+        cert-base64: ${{ secrets.BUILD_ID_CERT_BASE64 }}
+        cert-pass: ${{ secrets.BUILD_ID_CERT_PASS }}
+        provisioning-base64: ${{ secrets.BUILD_ID_PROVISIONING }}
+        keychain-pass: ${{ secrets.BUILD_ID_KEYCHAIN_PASS }}
 
     - uses: maxim-lobanov/setup-xcode@v1
       with:

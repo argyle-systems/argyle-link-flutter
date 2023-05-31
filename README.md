@@ -1,23 +1,44 @@
-# Argyle Link Flutter plugin (Beta)
+# Argyle Link Flutter SDK
 
-
-Argyle's Flutter plugin which wraps [our native Android and iOS SDKs](https://argyle.com/docs/products/argyle-link)
+Argyle Link Flutter SDK provides a way to integrate [Argyle Link](https://argyle.com/docs/link/overview) into your Flutter app.
 
 **Note:** We recommend you to lock your app to portrait orientation.
 
-## Installation
+**Requirements for iOS:**
+
+- Xcode 14.0+
+- iOS 14.0+
+
+**Requirements for Android:**
+
+Set the `minSdkVersion` in `android/app/build.gradle`:
+
+```groovy
+android {
+    defaultConfig {
+        minSdkVersion 26 // or greater
+    }
+}
+```
 
 ## 1. Add the SDK dependency
 
 Add `argyle_link_flutter` as a [dependency in your pubspec.yaml file](https://flutter.io/platform-plugins/).
 
-## 2. Integrate
+---
+## 2. Configure and integrate Link
+
 ### 1. Access your Link API Key
+
 1. Log into your [Console](https://console.argyle.com/api-keys) instance
 2. Navigate to the [API Keys](https://console.argyle.com/api-keys) area under the Developer menu
-3. Copy your Sandbox or Production Link API Key for use in the next step
+3. Copy your Sandbox or Production Link API Key for use in the next steps
 
-### 2. Set your Link API Key and start the SDK
+### 2. Utilize user tokens
+
+To prevent your API key and secret from being exposed on the front-end, [request user tokens on your server side](https://argyle.com/docs/link/user-tokens#creating-a-user-token).
+
+### 3. Integrate Link
 
 ``` dart
 import 'package:argyle_link_flutter/link_config.dart';
@@ -59,21 +80,4 @@ ArgyleLink.start(config);
 
 ### Usage
 
-For detailed guidance on how to integrate our SDK please review the example app located in this repo, and also check out our [Link SDK Documentation](https://argyle.com/docs/products/argyle-link).
-
-### iOS Requirements
-
-- Xcode 14.0+
-- iOS 14.0+
-
-### Android Requirements
-
-Set the `minSdkVersion` in `android/app/build.gradle`:
-
-```groovy
-android {
-    defaultConfig {
-        minSdkVersion 26 // or greater
-    }
-}
-```
+For detailed guidance on how to integrate our SDK please review the [example app](example/lib/app.dart), and also check out our [Link SDK Documentation](https://argyle.com/docs/link/overview).

@@ -9,12 +9,16 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - uses: argyle-systems/argyle-link-github-actions/setup-ios-build-identity@main
+    - name: Import Codesigning Certificate
+      uses: apple-actions/import-codesign-certs@v1
       with:
-        cert-base64: ${{ secrets.BUILD_ID_CERT_BASE64 }}
-        cert-pass: ${{ secrets.BUILD_ID_CERT_PASS }}
-        provisioning-base64: ${{ secrets.BUILD_ID_PROVISIONING }}
-        keychain-pass: ${{ secrets.BUILD_ID_KEYCHAIN_PASS }}
+        p12-file-base64: ${{ secrets.BUILD_ID_CERT_BASE64 }}
+        p12-password: ${{ secrets.BUILD_ID_CERT_PASS }}
+
+    - name: Install Provisioning Profile
+      uses: akiojin/install-provisioning-profile-github-action@v1.0
+      with:
+        base64: ${{ secrets.BUILD_ID_PROVISIONING }}
 
     - uses: maxim-lobanov/setup-xcode@v1
       with:

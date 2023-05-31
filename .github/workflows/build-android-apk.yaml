@@ -22,7 +22,7 @@ jobs:
 
     - run: pushd example; flutter pub get
 
-    - run: pushd example; flutter build apk --release
+    - run: pushd example; flutter build apk --dart-define=IS_INTERNAL_JSON_BUILD=true --release
 
     - name: Archive APK
       uses: actions/upload-artifact@v3

@@ -29,7 +29,7 @@ jobs:
 
     - run: pushd example; flutter pub get
 
-    - run: pushd example; flutter build ipa --export-options-plist=./ios/exportOptions.plist
+    - run: pushd example; flutter build ipa --dart-define=IS_INTERNAL_JSON_BUILD=true --export-options-plist=./ios/exportOptions.plist
 
     - name: Archive IPA
       uses: actions/upload-artifact@v3

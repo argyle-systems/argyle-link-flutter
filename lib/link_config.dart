@@ -4,7 +4,7 @@ import 'package:argyle_link_flutter/link_error.dart';
 import 'package:argyle_link_flutter/ui_event.dart';
 
 class LinkConfig {
-  final String linkKey;
+  final String? linkKey;
   final String userToken;
   final bool sandbox;
 
@@ -30,7 +30,8 @@ class LinkConfig {
   Function(UIEvent)? onUiEvent;
 
   LinkConfig({
-    required this.linkKey,
+    @Deprecated("The use of `linkKey` has been discontinued. `LinkConfig` can now be initialized without it.")
+    this.linkKey,
     required this.userToken,
     required this.sandbox,
     this.items,

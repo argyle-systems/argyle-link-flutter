@@ -13,7 +13,6 @@ class ArgyleLink {
     _config = config;
     _channel.setMethodCallHandler(_onMethodCall);
     final params = {
-      'linkKey': config.linkKey,
       'userToken': config.userToken,
       'sandbox': config.sandbox,
       'items': config.items,

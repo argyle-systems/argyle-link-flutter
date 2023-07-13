@@ -50,7 +50,6 @@ import 'package:argyle_link_flutter/form_data.dart';
 // ...
 
 final config = LinkConfig(
-  linkKey: 'YOUR_LINK_KEY',
   userToken: 'USER_TOKEN',
   sandbox: true, // Set it to false for production environment.
   // (Optional) Add a Link flow customization created in Console:

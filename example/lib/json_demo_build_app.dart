@@ -106,7 +106,6 @@ class _JsonDemoBuildAppState extends State<JsonDemoBuildApp> {
   }
 
   createLinkConfig() => LinkConfig(
-    linkKey: 'YOUR_LINK_KEY',     // Get it from https://console.argyle.com/link-key
     userToken: 'YOUR_USER_TOKEN', // Should be fetched and provided by your own backend API https://argyle.com/docs/api-reference/users
     sandbox: true,
 
@@ -165,14 +164,12 @@ class _JsonDemoBuildAppState extends State<JsonDemoBuildApp> {
   startArgyleSdkFromJson(String json) {
     final params = jsonDecode(json);
     final config = createConfigFromJson(params);
-    appendLogMessage('${config.linkKey}');
     configCallbacks(config, params['onCantFindItemClicked'] == true);
     ArgyleLink.start(config);
   }
 
   createConfigFromJson(Map params) =>
     LinkConfig(
-      linkKey: params['linkKey'],
       userToken: params['userToken'],
       sandbox: true,
       items: (params['items'] as List<dynamic>?)?.cast<String>(),

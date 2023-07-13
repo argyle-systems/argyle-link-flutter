@@ -39,7 +39,6 @@ class _AppState extends State<App> {
 
   startArgyleSdk() {
     final config = LinkConfig(
-      linkKey: 'YOUR_LINK_KEY',     // Get it from https://console.argyle.com/link-key
       userToken: 'YOUR_USER_TOKEN', // Should be fetched and provided by your own backend API https://argyle.com/docs/api-reference/users
       sandbox: true,
 

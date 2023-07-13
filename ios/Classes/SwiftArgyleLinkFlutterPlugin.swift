@@ -59,7 +59,6 @@ public class SwiftArgyleLinkFlutterPlugin: NSObject, FlutterPlugin {
 
     private func parseConfig(params: [String: Any]) -> LinkConfig {
         var config = LinkConfig(
-            linkKey: params["linkKey"] as! String,
             userToken: params["userToken"] as! String,
             sandbox: params["sandbox"] as! Bool
         )

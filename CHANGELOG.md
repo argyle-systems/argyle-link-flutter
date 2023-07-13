@@ -1,3 +1,28 @@
+## 1.2.0
+
+Added
+
+- Added user prompts for government benefits and "Employees only" Items.
+- Added allocation type selection for the entire paycheck scenario when using the `allow_changing_allocation_type` DDS config flag.
+
+Changed
+
+- Improved handling for Items that support multiple payroll providers.
+- Added more information to the Login screen about why Argyle is involved.
+- Updated text content used in DDS-related screens.
+- Deprecated the `linkKey` parameter.
+- Improved presentation of the login methods to the user.
+- Separated username and password reset buttons at login.
+- [iOS] Improved bottom sheet handling.
+
+Fixed
+
+- [iOS] Fixed various minor UI issues.
+- [Android] Fixed allocation editing issue within DDS flow.
+- [Android] Fixed an issue with confirming allocations for DDS.
+- [Android] Fixed an issue with opening the default email application from the MFA screen.
+- Fixed focus handling for allocation options.
+
 ## 1.1.0
 
 Added

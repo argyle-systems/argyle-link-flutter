@@ -1,3 +1,9 @@
+## 1.2.1
+
+Fixed:
+
+- [iOS] UI issues when deeplinking into account
+
 ## 1.2.0
 
 Added

@@ -1,3 +1,9 @@
+## 1.2.3
+
+Fixed
+
+- [iOS] An issue with closing Link from deep-linked screens
+
 ## 1.2.1
 
 Fixed:

@@ -79,4 +79,4 @@ ArgyleLink.start(config);
 
 ### Usage
 
-For detailed guidance on how to integrate our SDK please review the [example app](example/lib/app.dart), and also check out our [Link SDK Documentation](https://argyle.com/docs/link/overview).
+For detailed guidance on how to integrate our SDK please review the [example app](example/lib/app.dart), and also check out our [Link SDK Documentation](https://argyle.com/docs/link/initialization#flutter).

@@ -1,3 +1,13 @@
+## 1.2.4
+
+Added
+
+- A new account connection error message, `unsupported_language`, has been introduced. This message will be displayed if the user's payroll system contains data or documents in a language that Argyle does not currently support.
+
+Changed
+
+- The experience for returning users has been improved by making the required user actions more prominent. For example, an action requiring the user to reconnect their account is now more noticeable.
+
 ## 1.2.3
 
 Fixed

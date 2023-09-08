@@ -186,6 +186,7 @@ private extension ArgyleErrorType {
         case .DDS_NOT_SUPPORTED: return "DDS_NOT_SUPPORTED"
         case .INCOMPATIBLE_DDS_CONFIG: return "INCOMPATIBLE_DDS_CONFIG"
         case .GENERIC: return "GENERIC"
+        case .GIG_ITEMS_NOT_SUPPORTED: return "GIG_ITEMS_NOT_SUPPORTED"
         @unknown default: return "GENERIC"
         }
     }

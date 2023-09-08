@@ -21,5 +21,6 @@ enum LinkErrorType {
   expiredUserToken,
   ddsNotSupported,
   incompatibleDdsConfig,
-  generic
+  generic,
+  gigItemsNotSupported
 }

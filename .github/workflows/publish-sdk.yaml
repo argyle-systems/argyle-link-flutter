@@ -23,5 +23,12 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      - id: Extract git tag
+        run: echo "DEPLOY_TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+
+      - name: Set SDK version
+        run: |
+          sed -i "s/version: \"0.0.1\" # %LINK_VERSION%/version: \"${{ steps.tag.outputs.DEPLOY_TAG }}\"/g" pubspec.yaml
+
       - name: Publish
         run: flutter pub publish --force

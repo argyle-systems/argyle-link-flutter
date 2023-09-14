@@ -1,6 +1,7 @@
 name: argyle_link_flutter
 description: Argyle Link for Flutter. Integrates the native iOS and Android SDKs.
-version: "1.2.5"
+# will be replaced on deployment
+version: "0.0.1" # %LINK_VERSION%
 homepage: https://argyle.com/
 
 environment:

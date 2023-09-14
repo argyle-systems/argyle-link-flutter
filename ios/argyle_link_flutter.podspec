@@ -1,10 +1,10 @@
-#
-# To learn more about a Podspec see http://guides.cocoapods.org/syntax/podspec.html.
-# Run `pod lib lint argyle_link_flutter.podspec` to validate before publishing.
-#
+require "yaml"
+
+package = YAML.load_file(File.join(__dir__, "../pubspec.yaml"))
+
 Pod::Spec.new do |s|
   s.name             = 'argyle_link_flutter'
-  s.version          = '1.2.6'
+  s.version          = package["version"]
   s.summary          = 'A new flutter plugin project.'
   s.description      = <<-DESC
 A new flutter plugin project.

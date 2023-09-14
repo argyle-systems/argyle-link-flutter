@@ -1,3 +1,11 @@
+## 1.2.6
+
+Fixed
+
+- [iOS] An issue when deep linking to an item where Intro screen is visible
+- [iOS] An issue when deep linking with an accountId to Documents Upload
+- [iOS] Constrained items list display when the search input field is focused
+
 ## 1.2.4
 
 Added

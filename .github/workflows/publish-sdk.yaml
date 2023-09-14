@@ -23,7 +23,7 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - id: Extract git tag
+      - id: tag
         run: echo "DEPLOY_TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
 
       - name: Set SDK version

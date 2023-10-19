@@ -1,3 +1,15 @@
+## 1.3.0
+
+Added
+
+- New troubleshooting error messages and design improvements for multi-factor authentication (MFA) screens.
+- Argyle’s intro screen can be enabled for deep link Flows.
+
+Changed
+
+- The "login help" call-to-action button is shown more prominently on the login screen and after users enter invalid credentials.
+- The image preview shown for photo-captured uploaded documents is now zoomed out to show the entire document.
+
 ## 1.2.6
 
 Fixed

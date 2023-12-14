@@ -1,3 +1,17 @@
+## 1.4.0
+
+Added
+
+- Support for Flows that customize Items shown in Link search based on [mapping status](https://argyle.com/docs/overview/data-structure/items#mapping-status).
+- New account connection error: `unsupported_business_account`
+
+Changed
+
+- Redesigned layout for payroll providers screen.
+- Company logo on Link’s intro screen appears in front of the Argyle logo.
+- Users options shown when an account connection error occurs adjust depending on if a connection was previously established.
+
+
 ## 1.3.0
 
 Added

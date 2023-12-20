@@ -1,3 +1,13 @@
+## 1.4.1
+
+Fixed
+
+- [iOS] Potential App Store validation issues
+- [iOS] Minor bugs
+- [Android] Fix the wrong login method selected from the bottom sheet intermittently 
+- [Android] Fix incorrect results and logos in the search
+- [Android] Potential crash
+
 ## 1.4.0
 
 Added

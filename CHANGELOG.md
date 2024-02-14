@@ -1,3 +1,29 @@
+## 1.5.0
+
+Added:
+
+- (Android) SMS verification codes can be auto-filled during MFA.
+- (Limited payroll platforms) Ability for users to select their preferred multi-factor authentication (MFA) method.
+- (Limited payroll platforms) Users are asked if they remember their login credentials before reaching the login screen. If they do not, they are re-directed to the passwordless login flow.
+
+Changed:
+
+- Redesign of the account reconnection screen.
+- Redesign of the account connection success screen.
+- Redesign of how single sign-on (SSO) methods are shown on the login screen.
+- Redesign of the payroll provider selection screen.
+- Search field hidden for [constrained lists](https://argyle.com/docs/workflows/account-connections#list) of less than 10 Items.
+- Additional text added to the revoking account connection screen.
+- Copy changes for deposit switches with allocation adjustment enabled.
+- The **Callback** fallback experience now lets users search for their payroll provider if they cannot find their employer.
+
+Fixed:
+
+- Dynamic title text scaling on search screen.
+- Text wrapping for fallback text.
+- Single obfuscation character used.
+- Document uploading available for unmapped Items.
+
 ## 1.4.1
 
 Fixed

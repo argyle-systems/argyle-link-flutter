@@ -1,3 +1,33 @@
+## 1.6.0
+
+Added:
+
+- Multiple document upload submissions allowed.
+- Three new document upload categories — proof of identity, proof of address, miscellaneous.
+- After uploading documents, users are asked for their full name if Link was entered through an embedded instance or shareable URL.
+- Uploaded documents can be previewed after submission.
+
+Changed:
+
+- All uploaded documents are now contained within one document upload account.
+- The accountId property is no longer returned by the onDocumentsSubmitted callback.
+- Uploaded documents can be individually deleted.
+- Document upload can be shown on the connection success screen.
+- Document upload can be shown on the payroll provider selection screen.
+- Document upload can be shown when users select an unsupported employer.
+- When returning to Link’s full search experience is optionally enabled for direct logins, the “Find more employers” button text and search experience can now be customized. The button layout has also been adjusted.
+- Success screen subtitles for account connections, form submissions, and document uploads are now customizable.
+- Deposit switch percentages adjust automatically when being edited.
+- Redesigned layout when grouping Items are selected in Link.
+
+Fixed:
+
+- [iOS] Now, Direct Deposit Update starts automatically, eliminating the intermediate error screen
+- [iOS] The issue of an infinite loading screen appearing sporadically
+- [iOS] Navigation issues within Employment History flows
+- [iOS] Misleading error previously shown on Phone Country selection
+- [iOS] Crash triggered by tapping a header in User Profile
+
 ## 1.5.0
 
 Added:

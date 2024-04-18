@@ -53,5 +53,7 @@
 		<string>ymail</string>
 		<string>ms-outlook</string>
 	</array>
+	<key>NSCameraUsageDescription</key>
+	<string>Demo app would like to access your camera to upload the docs</string>
 </dict>
 </plist>

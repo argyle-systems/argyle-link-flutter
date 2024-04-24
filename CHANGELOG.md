@@ -1,3 +1,9 @@
+## 1.6.1
+
+Fixed:
+
+- [iOS] The issue of Dark Mode being unintentionally enabled on some views
+
 ## 1.6.0
 
 Added:

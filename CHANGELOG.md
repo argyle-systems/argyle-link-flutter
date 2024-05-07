@@ -1,3 +1,9 @@
+## 1.6.2
+
+Fixed:
+
+- [iOS] The issue with Link not closing when tapping Cancel after failed direct login.
+
 ## 1.6.1
 
 Fixed:

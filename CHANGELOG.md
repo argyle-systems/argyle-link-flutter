@@ -1,3 +1,29 @@
+## 1.7.0
+
+Added:
+
+- `full_auth_required` account connection error [[introduced](https://changelog.argyle.com/link-updates-2OOI48)](https://changelog.argyle.com/link-updates-2OOI48).
+- `credentials_managed_by_organization` account connection error [[introduced](https://changelog.argyle.com/link-updates-20SpmU)](https://changelog.argyle.com/link-updates-20SpmU).
+- `closeMethod` property was added to `onUIEvent` [[callback](https://argyle.com/docs/link/reference/tracking#link-closed)](https://argyle.com/docs/link/reference/tracking#link-closed).
+- Introduced specific [[Link initialization](https://argyle.com/docs/link/initialization#optional-initialization-parameters)](https://argyle.com/docs/link/initialization#optional-initialization-parameters) error when `flowId` is passed as an empty string.
+- Whitespace format validation for MFA codes.
+- “Skip document upload” button appears when all document upload categories are optional.
+- Date picker UI added and (All) date validations introduced.
+
+Changed:
+
+- “Allow users to access full Search experience” added to “List” search and connect settings when configuring [[Flows](https://console.argyle.com/flows)](https://console.argyle.com/flows) in Console.
+- When documents are submitted after a successful account connection, the “Done” button closes Link.
+- Deposit switch percentage allocations automatically adjust to add up to 100% when editing multiple bank accounts.
+- Improved UX of Link search page (home screen) when no categories are shown.
+- Standardized metadata formats for uploaded documents.
+
+Fixed:
+
+- “Submit” button now closes Link when documents are submitted after navigating to Doc Upload from Link’s intro screen.
+- (Android) `onCantFindItemClicked` [[callback](https://argyle.com/docs/link/reference/callbacks#oncantfinditemclicked)](https://argyle.com/docs/link/reference/callbacks#oncantfinditemclicked) fix (was not being sent).
+- (iOS) “Remainder” text adjusted to “Entire paycheck” when initially editing full paycheck deposit switch allocations.
+
 ## 1.6.2
 
 Fixed:

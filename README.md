@@ -6,18 +6,22 @@ Argyle Link Flutter SDK provides a way to integrate [Argyle Link](https://argyle
 
 **Requirements for iOS:**
 
-- Xcode 14.0+
 - iOS 14.0+
+- Xcode 14.0+
+- Swift 5.5+
 
 **Requirements for Android:**
 
 Set the `minSdkVersion` in `android/app/build.gradle`:
 
-```groovy
+```
 android {
+    compileSdk 34
     defaultConfig {
-        minSdkVersion 26 // or greater
+        minSdk 26
+        ...
     }
+    ...
 }
 ```
 

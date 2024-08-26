@@ -1,3 +1,28 @@
+## 1.7.1
+
+Added:
+
+- Users can now instantly exit the MFA step and retry login with different credentials.
+
+Changed:
+
+- "Resend code via SMS" button is enabled after a 10-second delay on the MFA screen.
+- Enhanced visibility of the "Login help" button on the Login screen when Document Upload is available.
+- Updated button text in the unsupported item bottom sheet from "Done" to "Cancel".
+- Improved how the "Connect more employers" option affects the Success and Employment Records screens in direct login scenarios.
+- Improved handling of the "Can't find your employer?" flow on the Payroll Provider Grouping screen.
+
+Fixed:
+
+- [iOS] `user_action_timeout` error that caused ADP items to become unresponsive.
+- [iOS] Issue where "Done" or "Close" buttons failed to close Link after document upload via the Intro screen.
+- [iOS] Problem with documents containing errors not being automatically deleted on back navigation, allowing submission.
+- [iOS] Formatting issue with the "Homeoffice" login method logo.
+- [iOS] Spacing issues on the Login screen for the "Netflix" item in direct login scenarios.
+- [Android] Phone input fields now use the appropriate keyboard type and ignore non-numeric characters when pasted.
+- [Android] Misalignment of logos on the login selection screen.
+- [Android] An issue where error messages would persist when switching between phone and email input methods.
+
 ## 1.7.0
 
 Added:

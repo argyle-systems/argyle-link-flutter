@@ -2,7 +2,7 @@ name: build-android-apk
 on:
   push:
     branches:
-    - master
+      - '**'
 jobs:
   build:
     runs-on: macos-latest
@@ -12,7 +12,7 @@ jobs:
     - uses: actions/setup-java@v2
       with:
         distribution: 'zulu'
-        java-version: '11'
+        java-version: '17'
 
     - name: Install Flutter
       uses: subosito/flutter-action@v2

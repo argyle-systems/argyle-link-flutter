@@ -12,12 +12,12 @@ jobs:
     - uses: actions/setup-java@v2
       with:
         distribution: 'zulu'
-        java-version: '11'
+        java-version: '17'
 
     - name: Install Flutter
       uses: subosito/flutter-action@v2
       with:
-        flutter-version: '3.7.10'
+        flutter-version: '3.24.1'
         channel: 'stable'
 
     - run: pushd example; flutter pub get

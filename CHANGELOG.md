@@ -1,3 +1,9 @@
+## 1.7.2
+
+Fixed:
+
+- [Android] The issue causing crashes on the loader screen for specific devices and OS versions.
+
 ## 1.7.1
 
 Added:

@@ -1,3 +1,25 @@
+## 1.8.0
+
+Added:
+
+- For [direct logins](https://docs.argyle.com/workflows/account-connections#direct-login):
+- The “**Connect more employers**” button on Link’s success screen can now be optionally toggled ON in your [Flow Settings](https://console.argyle.com/flows).
+- A new “**Find more employers**” button is now shown for unsupported Items if the “Allow users to access full search experience” toggle is ON in your Flow Settings.
+
+Changed:
+
+- “Login help” call-to-action button for password resets is now shown more prominently after invalid credentials are submitted on Link’s login screen.
+- An improvement to Link’s exit navigation now ensures that users can re-attempt MFA submissions after an incorrect submission without losing their progress.
+- After successful document uploads, the “Done” button now closes Link.
+- The initial screen shown to returning users can now be set to the “Your connections” screen, which displays the users previous connections.
+- Single-sign on (SSO) login hints are now larger.
+- Improved UX of Link errors screens for the `platform_temporarily_unavailable` and `full_auth_required` errors.
+
+Fixed:
+
+- After users select a payroll provider and are asked for their employer, if they select “Can’t find your employer?” they will no longer be directed back to the redundant payroll provider selection screen.
+- For direct logins, users can now access previous connections to Items that are no longer supported by Argyle.
+
 ## 1.7.2
 
 Fixed:

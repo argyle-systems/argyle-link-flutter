@@ -1,3 +1,23 @@
+## 1.9.0
+
+Added:
+
+- New `session_limit_reached` [account connection error](https://docs.argyle.com/api-reference/account-connection-errors#sessionlimitreached) introduced.
+- Duplicate account connections are now prevented during the “Login help” account recovery process for certain Items.
+- Payroll providers that require a Company or Org-level ID now provide tailored hints on where users can find these identifiers.
+- A “Done” button now appears when returning users submit [additional document uploads](https://docs.argyle.com/workflows/document-processing#additional-uploads-returning-users).
+- When viewing an existing connection, users can now exit Link via new buttons.
+
+Changed:
+
+- Users can now be prevented from searching for a different payroll provider when [direct login](https://docs.argyle.com/workflows/account-connections#direct-login) is used to connect them to a specific employer or payroll provider. This is disabled by default but can be enabled via [Flow settings](https://console.argyle.com/flows).
+- Link’s response form submission screen has been updated to clarify that submitting a form is not equivalent to connecting a payroll account.
+
+Fixed:
+
+- [Lists of items](https://docs.argyle.com/workflows/account-connections#list) now remain visible when “Search” is selected.
+
+
 ## 1.8.0
 
 Added:

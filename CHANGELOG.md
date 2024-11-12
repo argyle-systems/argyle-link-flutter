@@ -1,3 +1,9 @@
+## 1.9.1
+
+Fixed:
+
+- [iOS] Issues with Link closing logic
+
 ## 1.9.0
 
 Added:

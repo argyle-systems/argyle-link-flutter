@@ -36,7 +36,7 @@ jobs:
     - run: pushd example; flutter build ipa --dart-define=IS_INTERNAL_JSON_BUILD=true --export-options-plist=./ios/exportOptions.plist
 
     - name: Archive IPA
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: ipa-app-release
         path: example/build/ios/ipa/argyle_link_flutter_example.ipa

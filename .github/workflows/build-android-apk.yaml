@@ -25,7 +25,7 @@ jobs:
     - run: pushd example; flutter build apk --dart-define=IS_INTERNAL_JSON_BUILD=true --release
 
     - name: Archive APK
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: apk-app-release
         path: example/build/app/outputs/flutter-apk/app-release.apk

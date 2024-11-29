@@ -1,3 +1,18 @@
+## 1.10.0
+
+Added:
+
+- Navigate to app shortcut has been added to the Log-in screen for specific payroll platforms.
+- Uploaded documents now appear in the Connections screen for returning users.
+- Introduced a password reset flow for more login experiences.
+- Enabled a password reset flow for additional login experiences
+- [Android] Automatic date formatting added.
+- [iOS] The native date picker added.
+
+Changed:
+
+- Heavier font weight is now used for button text.
+
 ## 1.9.1
 
 Fixed:

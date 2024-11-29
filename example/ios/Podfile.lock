@@ -1,7 +1,7 @@
 PODS:
-  - Argyle (5.10.1)
+  - Argyle (5.11.0)
   - argyle_link_flutter (0.0.1):
-    - Argyle (= 5.10.1)
+    - Argyle (= 5.11.0)
     - Flutter
   - Flutter (1.0.0)
 
@@ -20,8 +20,8 @@ EXTERNAL SOURCES:
     :path: Flutter
 
 SPEC CHECKSUMS:
-  Argyle: 730fca9b08d342e62c194baacfbbced2e6680b52
-  argyle_link_flutter: c6e69aaa1fef9e57fcfb35a2920660f3bb203e11
+  Argyle: 87e35cd1f61bc19dae7c586efd87b45322601d71
+  argyle_link_flutter: 3021ab609be32821cc33c5d19c9c68c967506b52
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
 
 PODFILE CHECKSUM: 775997f741c536251164e3eacf6e34abf2eb7a17

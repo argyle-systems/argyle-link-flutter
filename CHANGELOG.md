@@ -13,7 +13,6 @@ Changed:
 - Input text boxes now feature more prominent shading to better differentiate them from buttons.
 - Text and animations have been updated on the data retrieval loading screen that appears after a successful account connection.
 - Suggested options are now shown when selecting the country code for phone number inputs.
-- The last-used multi-factor authentication (MFA) method is now pre-selected for users when they attempt re-authentication to an account that was connected via the login help experience supported by certain Items.
 
 
 ## 1.10.1

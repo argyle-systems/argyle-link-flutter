@@ -1,3 +1,23 @@
+## 1.12.0
+
+Added:
+
+- Excluded Items now appear in search. When selected, users will see a [message](https://changelog.argyle.com/2025-02-05/) that connections to the Item are not supported.
+- Rich text now supported for multi-factor authentication (MFA) messages.
+- Document upload text reminding the user to submit clear and fully visible images.
+- Users now see a “Not your employer?” option when [direct login](https://docs.argyle.com/workflows/account-connections#direct-login) is used, enabling them to return to full search if the Item is not their employer or payroll provider.
+- `userSubmissionComplete` parameter added to [onClose](https://docs.argyle.com/link/reference/callbacks#onclose) callback.
+
+Changed:
+
+- Link’s search component has been standardized across all search screens.
+- Optimizations that reduce SDK size by 50% to under 10MB.
+
+Fixed
+
+- Duplicate accounts handled correctly when login help and a normal connection attempt are made to the same Item.
+
+
 ## 1.11.0
 
 Added:

@@ -11,11 +11,13 @@ Added:
 Changed:
 
 - Link’s search component has been standardized across all search screens.
-- Optimizations that reduce SDK size by 50% to under 10MB.
+- [Android] Link’s navigation bar is now transparent.
+- [iOS] Optimizations that reduce SDK size by 50% to under 10MB.
 
 Fixed
 
 - Duplicate accounts handled correctly when login help and a normal connection attempt are made to the same Item.
+- [Android] Account connections are properly reflected when navigating to an Item grouping after direct logins.
 
 
 ## 1.11.0

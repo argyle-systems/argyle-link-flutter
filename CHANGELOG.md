@@ -1,3 +1,23 @@
+## 1.13.0
+
+Added:
+
+- Improved styling for user connections with new status indicator designs.
+- Duplicate account connections are now prevented during login for additional Items.
+- Allowing users to preview uploaded documents can be disabled in [Flow Editor](https://console.argyle.com/flows).
+- Multi-factor authentication (MFA) screens now support multiple input fields.
+
+Changed:
+
+- Users can now search for a payroll provider when they are unable to find their employer, even if Link’s fallback options are turned off.
+- Success copy updated for uploaded documents.
+
+
+Fixed:
+
+- Full search filtering now ignored when using [direct login](https://docs.argyle.com/workflows/account-connections#direct-login).
+- Link now closes after MFA is completed during Link’s login help process.
+
 ## 1.12.0
 
 Added:

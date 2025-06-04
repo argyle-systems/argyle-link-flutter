@@ -1,5 +1,6 @@
 import 'package:argyle_link_flutter/account_data.dart';
 import 'package:argyle_link_flutter/form_data.dart';
+import 'package:argyle_link_flutter/language.dart';
 import 'package:argyle_link_flutter/link_error.dart';
 import 'package:argyle_link_flutter/ui_event.dart';
 
@@ -8,6 +9,7 @@ class LinkConfig {
   final String userToken;
   final bool sandbox;
 
+  Language? language;
   List<String>? items;
   String? accountId;
   String? flowId;
@@ -34,6 +36,7 @@ class LinkConfig {
     this.linkKey,
     required this.userToken,
     required this.sandbox,
+    this.language,
     this.items,
     this.accountId,
     this.flowId,

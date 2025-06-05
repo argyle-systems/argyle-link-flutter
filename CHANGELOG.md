@@ -1,3 +1,25 @@
+## 1.14.0
+
+Added:
+
+- Document upload category limits now persist for returning users.
+- When document upload is enabled as a fallback, users that select employers or payroll providers that have been excluded from user flows are now given the option to upload documents.
+- [Pre-filling user contact information](https://changelog.argyle.com/2025-03-25/) in Link is now supported for mobile implementations.
+- For invite flows, a success page is now shown after users submit document uploads.
+- Additional language on document deletion screens clarifying that deletion from Argyle may not remove documents from other external systems.
+
+Changed:
+
+- “Your connections” is now the default returning user landing page for direct logins and new Flows when users already have connected accounts via Argyle.
+- The default button copy for “Login help” has been changed to “Need help logging in?”.
+- The default button copy to exit Link has been updated to “Done”.
+- For invite flows, a success page is now shown after users submit uploaded documents.
+
+Fixed
+
+- Prefilled fields now remain filled when users navigate back from multi-factor authentication (MFA) screens.
+- Birth date format bug after invalid credentials account connection error.
+
 ## 1.13.0
 
 Added:

@@ -62,6 +62,7 @@ public class SwiftArgyleLinkFlutterPlugin: NSObject, FlutterPlugin {
             userToken: params["userToken"] as! String,
             sandbox: params["sandbox"] as! Bool
         )
+        config.language = Language(rawValue: params["language"] as? String ?? "") ?? .EN
         config.items = params["items"] as? [String]
         config.accountId = params["accountId"] as? String
         config.flowId = params["flowId"] as? String

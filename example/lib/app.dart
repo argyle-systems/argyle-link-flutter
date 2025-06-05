@@ -41,7 +41,7 @@ class _AppState extends State<App> {
     final config = LinkConfig(
       userToken: 'YOUR_USER_TOKEN', // Should be fetched and provided by your own backend API https://argyle.com/docs/api-reference/users
       sandbox: true,
-
+      // language: Language.en,
       // accountId: 'USER_ACCOUNT_ID', // Specify to take the user directly to the account
       // flowId: '00000000',           // Specify to use flows https://argyle.com/docs/console/flows
       // ddsConfig: 'YOUR_DDS_CONFIG', // Specify to use deposit switching https://argyle.com/docs/workflows/deposit-switching

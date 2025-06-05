@@ -68,6 +68,9 @@ class ArgyleLinkFlutterPlugin : FlutterPlugin, ActivityAware, MethodCallHandler 
         userToken = params["userToken"] as String,
         sandbox = params["sandbox"] as Boolean
     ).apply {
+        if (params["language"] != null) {
+            language = Language.valueOf(params["language"] as String)
+        }
         items = params["items"] as List<String>?
         accountId = params["accountId"] as String?
         flowId = params["flowId"] as String?

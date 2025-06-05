@@ -14,6 +14,7 @@ class ArgyleLink {
     _channel.setMethodCallHandler(_onMethodCall);
     final params = {
       'userToken': config.userToken,
+      'language': config.language?.name.toUpperCase(),
       'sandbox': config.sandbox,
       'items': config.items,
       'accountId': config.accountId,

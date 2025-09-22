@@ -2,14 +2,14 @@ group 'com.argyle.argyle_link_flutter'
 version '1.0-SNAPSHOT'
 
 buildscript {
-    ext.kotlin_version = '2.0.21'
+    ext.kotlin_version = '2.2.20'
     repositories {
         google()
         mavenCentral()
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.7.3'
+        classpath 'com.android.tools.build:gradle:8.13.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
@@ -41,12 +41,12 @@ android {
         main.java.srcDirs += 'src/main/kotlin'
     }
 
-    compileSdk = 35
+    compileSdk = 36
     defaultConfig {
         minSdk = 26
     }
 }
 
 dependencies {
-    implementation 'com.argyle:argyle-link-android:5.15.1'
+    implementation 'com.argyle:argyle-link-android:5.15.2'
 }

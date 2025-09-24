@@ -23,12 +23,11 @@ jobs:
 
     - uses: maxim-lobanov/setup-xcode@v1
       with:
-        xcode-version: '15.0'
+        xcode-version: 'latest-stable'
 
     - name: Install Flutter
       uses: subosito/flutter-action@v2
       with:
-        flutter-version: '3.29.0'
         channel: 'stable'
         architecture: x64
 
@@ -41,11 +40,3 @@ jobs:
       with:
         name: ipa-app-release
         path: example/build/ios/ipa/argyle_link_flutter_example.ipa
-
-    - name: Upload app to browserstack
-      run: |
-        curl \
-         -u ${{ secrets.ARGYLE_MOBILE_RUN_BS_USER }}:${{ secrets.ARGYLE_MOBILE_RUN_BS_KEY }} \
-         -X POST "https://api-cloud.browserstack.com/app-automate/upload" \
-         -F "file=@example/build/ios/ipa/argyle_link_flutter_example.ipa" \
-         -F 'data={"custom_id": "ios_flutter_latest"}'

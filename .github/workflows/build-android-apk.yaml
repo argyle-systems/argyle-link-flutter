@@ -17,7 +17,6 @@ jobs:
     - name: Install Flutter
       uses: subosito/flutter-action@v2
       with:
-        flutter-version: '3.29.0'
         channel: 'stable'
 
     - run: pushd example; flutter pub get
@@ -29,11 +28,3 @@ jobs:
       with:
         name: apk-app-release
         path: example/build/app/outputs/flutter-apk/app-release.apk
-
-    - name: Upload app to browserstack
-      run: |
-        curl \
-         -u ${{ secrets.ARGYLE_MOBILE_RUN_BS_USER }}:${{ secrets.ARGYLE_MOBILE_RUN_BS_KEY }} \
-         -X POST "https://api-cloud.browserstack.com/app-automate/upload" \
-         -F "file=@example/build/app/outputs/flutter-apk/app-release.apk" \
-         -F 'data={"custom_id": "android_flutter_latest"}'

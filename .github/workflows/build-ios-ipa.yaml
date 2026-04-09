@@ -8,25 +8,25 @@ jobs:
   build:
     runs-on: macos-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
 
     - name: Import Codesigning Certificate
-      uses: apple-actions/import-codesign-certs@v1
+      uses: apple-actions/import-codesign-certs@253ddeeac23f2bdad1646faac5c8c2832e800071 # v1.0.4
       with:
         p12-file-base64: ${{ secrets.ARGYLE_LINK_IOS_SIGNING_CERT_P12 }}
         p12-password: ${{ secrets.ARGYLE_LINK_IOS_SIGNING_CERT_PASS }}
 
     - name: Install Provisioning Profile
-      uses: akiojin/install-provisioning-profile-github-action@v1.0
+      uses: akiojin/install-provisioning-profile-github-action@e3f58307bd921490aed4691bb568ce4eb2849c62 # v1.0
       with:
         base64: ${{ secrets.ARGYLE_LINK_IOS_SIGNING_PROVISIONING }}
 
-    - uses: maxim-lobanov/setup-xcode@v1
+    - uses: maxim-lobanov/setup-xcode@ed7a3b1fda3918c0306d1b724322adc0b8cc0a90 # v1.7.0
       with:
         xcode-version: 'latest-stable'
 
     - name: Install Flutter
-      uses: subosito/flutter-action@v2
+      uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2.23.0
       with:
         channel: 'stable'
         architecture: x64
@@ -36,7 +36,7 @@ jobs:
     - run: pushd example; flutter build ipa --dart-define=IS_INTERNAL_JSON_BUILD=true --export-options-plist=./ios/exportOptions.plist
 
     - name: Archive IPA
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
       with:
         name: ipa-app-release
         path: example/build/ios/ipa/argyle_link_flutter_example.ipa

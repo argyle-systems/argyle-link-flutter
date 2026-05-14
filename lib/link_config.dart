@@ -6,7 +6,8 @@ import 'package:argyle_link_flutter/ui_event.dart';
 
 class LinkConfig {
   final String? linkKey;
-  final String userToken;
+  final String? userToken;
+  final String? connectUrl;
   final bool sandbox;
 
   Language? language;
@@ -34,7 +35,8 @@ class LinkConfig {
   LinkConfig({
     @Deprecated("The use of `linkKey` has been discontinued. `LinkConfig` can now be initialized without it.")
     this.linkKey,
-    required this.userToken,
+    this.userToken,
+    this.connectUrl,
     required this.sandbox,
     this.language,
     this.items,

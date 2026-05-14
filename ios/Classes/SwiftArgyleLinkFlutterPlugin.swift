@@ -13,7 +13,12 @@ public class SwiftArgyleLinkFlutterPlugin: NSObject, FlutterPlugin {
     }
 
     private var presentedController: UIViewController? {
-        UIApplication.shared.delegate?.window??.rootViewController
+        UIApplication.shared.connectedScenes
+            .compactMap { $0 as? UIWindowScene }
+            .flatMap { $0.windows }
+            .first { $0.isKeyWindow }?
+            .rootViewController
+        ?? UIApplication.shared.delegate?.window??.rootViewController
     }
 
     public static func register(with registrar: FlutterPluginRegistrar) {
@@ -59,7 +64,8 @@ public class SwiftArgyleLinkFlutterPlugin: NSObject, FlutterPlugin {
 
     private func parseConfig(params: [String: Any]) -> LinkConfig {
         var config = LinkConfig(
-            userToken: params["userToken"] as! String,
+            userToken: params["userToken"] as? String,
+            connectUrl: params["connectUrl"] as? String,
             sandbox: params["sandbox"] as! Bool
         )
         config.language = Language(rawValue: params["language"] as? String ?? "") ?? .EN

@@ -65,9 +65,10 @@ class ArgyleLinkFlutterPlugin : FlutterPlugin, ActivityAware, MethodCallHandler 
 
     @Suppress("UNCHECKED_CAST")
     private fun parseLinkConfig(params: Map<String, Any>) = LinkConfig(
-        userToken = params["userToken"] as String,
+        userToken = params["userToken"] as String?,
         sandbox = params["sandbox"] as Boolean
     ).apply {
+        (params["connectUrl"] as String?)?.let { connectUrl = it }
         if (params["language"] != null) {
             language = Language.valueOf(params["language"] as String)
         }

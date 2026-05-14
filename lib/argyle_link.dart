@@ -10,10 +10,14 @@ class ArgyleLink {
   static late LinkConfig _config;
 
   static Future<void> start(LinkConfig config) {
+    if (config.userToken == null && config.connectUrl == null) {
+      throw ArgumentError('[ArgyleLink] Either userToken or connectUrl must be defined.');
+    }
     _config = config;
     _channel.setMethodCallHandler(_onMethodCall);
     final params = {
       'userToken': config.userToken,
+      'connectUrl': config.connectUrl,
       'language': config.language?.name.toUpperCase(),
       'sandbox': config.sandbox,
       'items': config.items,

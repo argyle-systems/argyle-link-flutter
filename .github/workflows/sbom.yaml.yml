@@ -1,0 +1,11 @@
+name: SBOM
+
+on:
+  workflow_dispatch:
+  release:
+    types: [ published ]
+
+jobs:
+  run:
+    uses: argyle-systems/argyle-security-workflows/.github/workflows/sbom-shared.yaml@613bb323597342084d96351ee03a34f74cdc5a6e # v1.1.17
+    secrets: inherit

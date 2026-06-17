@@ -11,7 +11,7 @@ jobs:
     - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
 
     - name: Import Codesigning Certificate
-      uses: apple-actions/import-codesign-certs@253ddeeac23f2bdad1646faac5c8c2832e800071 # v1.0.4
+      uses: apple-actions/import-codesign-certs@5142e029c445c10ffc7149d172e540235a065466 # v7.0.0
       with:
         p12-file-base64: ${{ secrets.ARGYLE_LINK_IOS_SIGNING_CERT_P12 }}
         p12-password: ${{ secrets.ARGYLE_LINK_IOS_SIGNING_CERT_PASS }}

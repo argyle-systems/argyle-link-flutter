@@ -7,5 +7,5 @@ on:
 
 jobs:
   run:
-    uses: argyle-systems/argyle-security-workflows/.github/workflows/sbom-shared.yaml@613bb323597342084d96351ee03a34f74cdc5a6e # v1.1.17
+    uses: argyle-systems/argyle-security-workflows/.github/workflows/sbom-shared.yaml@36b35aef01e0043d798a8ba35c49b1bab23be20c # v1.1.19
     secrets: inherit

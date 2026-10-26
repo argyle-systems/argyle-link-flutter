@@ -1,7 +1,7 @@
 package com.argyle.argyle_link_flutter
 
 import android.app.Activity
-import com.argyle.*
+import android.content.Intent
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
@@ -9,6 +9,8 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
+import org.json.JSONArray
+import org.json.JSONObject
 
 class ArgyleLinkFlutterPlugin : FlutterPlugin, ActivityAware, MethodCallHandler {
 
@@ -16,7 +18,6 @@ class ArgyleLinkFlutterPlugin : FlutterPlugin, ActivityAware, MethodCallHandler 
 
     private lateinit var channel: MethodChannel
     private var activity: Activity? = null
-    private var newTokenCallback: ((String) -> Unit)? = null
 
     override fun onAttachedToActivity(binding: ActivityPluginBinding) {
         activity = binding.activity
@@ -57,108 +58,83 @@ class ArgyleLinkFlutterPlugin : FlutterPlugin, ActivityAware, MethodCallHandler 
     }
 
     private fun start(call: MethodCall) {
-        activity ?: throw IllegalStateException("Activity must be attached")
-        val params = call.argument<Map<String, Any>>("config")
+        val activity = activity ?: throw IllegalStateException("Activity must be attached")
+        val params = call.argument<Map<String, Any?>>("config")
             ?: throw IllegalArgumentException("config parameter must be set")
-        ArgyleLink.start(activity!!, parseLinkConfig(params))
-    }
-
-    @Suppress("UNCHECKED_CAST")
-    private fun parseLinkConfig(params: Map<String, Any>) = LinkConfig(
-        userToken = params["userToken"] as String?,
-        sandbox = params["sandbox"] as Boolean
-    ).apply {
-        (params["connectUrl"] as String?)?.let { connectUrl = it }
-        if (params["language"] != null) {
-            language = Language.valueOf(params["language"] as String)
+        val callbacks = params
+            .filter { (key, value) -> key.startsWith("on") && value == true }
+            .keys
+            .map { if (it == "onUiEvent") "onUIEvent" else it }
+            .toSet()
+        val session = ArgyleWebLinkSession(
+            page = ArgyleWebLinkPage(params, callbacks),
+            onCallback = { name, data -> sendCallback(name, data) }
+        )
+        if (!ArgyleWebLinkSession.begin(session)) {
+            return
         }
-        items = params["items"] as List<String>?
-        accountId = params["accountId"] as String?
-        flowId = params["flowId"] as String?
-        ddsConfig = params["ddsConfig"] as String?
-
-        apiHost = params["apiHost"] as String?
-        wrapperSdk = "Flutter"
-
-        if (params["onCantFindItemClicked"] as Boolean) {
-            onCantFindItemClicked = {
-                channel.invokeMethod("onCantFindItemClicked", mapOf("term" to it))
-            }
-        }
-        if (params["onAccountCreated"] as Boolean) {
-            onAccountCreated = { channel.invokeMethod("onAccountCreated", it.toMap()) }
-        }
-        if (params["onAccountConnected"] as Boolean) {
-            onAccountConnected = { channel.invokeMethod("onAccountConnected", it.toMap()) }
-        }
-        if (params["onAccountRemoved"] as Boolean) {
-            onAccountRemoved = { channel.invokeMethod("onAccountRemoved", it.toMap()) }
-        }
-        if (params["onAccountError"] as Boolean) {
-            onAccountError = { channel.invokeMethod("onAccountError", it.toMap()) }
-        }
-        if (params["onDDSSuccess"] as Boolean) {
-            onDDSSuccess = { channel.invokeMethod("onDDSSuccess", it.toMap()) }
-        }
-        if (params["onDDSError"] as Boolean) {
-            onDDSError = { channel.invokeMethod("onDDSError", it.toMap()) }
-        }
-        if (params["onFormSubmitted"] as Boolean) {
-            onFormSubmitted = { channel.invokeMethod("onFormSubmitted", it.toMap()) }
-        }
-        if (params["onDocumentsSubmitted"] as Boolean) {
-            onDocumentsSubmitted = { channel.invokeMethod("onDocumentsSubmitted", it.toMap()) }
-        }
-        if (params["onError"] as Boolean) {
-            onError = { channel.invokeMethod("onError", it.toMap()) }
-        }
-        if (params["onClose"] as Boolean) {
-            onClose = { channel.invokeMethod("onClose", null) }
-        }
-        if (params["onTokenExpired"] as Boolean) {
-            onTokenExpired = {
-                newTokenCallback = it
-                channel.invokeMethod("onTokenExpired", null)
-            }
-        }
-        if (params["onUiEvent"] as Boolean) {
-            onUIEvent = { channel.invokeMethod("onUiEvent", it.toMap()) }
+        try {
+            activity.startActivity(Intent(activity, ArgyleWebLinkActivity::class.java))
+        } catch (e: Throwable) {
+            ArgyleWebLinkSession.cancel(session)
         }
     }
 
-    private fun AccountData.toMap() = mapOf(
-        "accountData" to mapOf(
-            "accountId" to accountId, "userId" to userId, "itemId" to itemId
-        )
-    )
-
-    private fun FormData.toMap() = mapOf(
-        "formData" to mapOf(
-            "accountId" to accountId, "userId" to userId
-        )
-    )
-
-    private fun LinkError.toMap() = mapOf(
-        "linkError" to mapOf(
-            "errorType" to errorType.name,
-            "errorMessage" to errorMessage,
-            "errorDetails" to errorDetails
-        )
-    )
-
-    private fun UIEvent.toMap() = mapOf(
-        "uiEvent" to mapOf(
-            "name" to name, "properties" to properties
-        )
-    )
+    private fun sendCallback(name: String, data: JSONObject) {
+        when (name) {
+            "onAccountCreated", "onAccountConnected", "onAccountRemoved", "onAccountError",
+            "onDDSSuccess", "onDDSError" -> channel.invokeMethod(
+                name,
+                mapOf("accountData" to data.pick("accountId", "userId", "itemId"))
+            )
+            "onFormSubmitted", "onDocumentsSubmitted" -> channel.invokeMethod(
+                name,
+                mapOf("formData" to data.pick("accountId", "userId"))
+            )
+            "onError" -> channel.invokeMethod(
+                name,
+                mapOf(
+                    "linkError" to mapOf(
+                        "errorType" to (data.optStringOrNull("errorType") ?: "generic"),
+                        "errorMessage" to (data.optStringOrNull("errorMessage") ?: ""),
+                        "errorDetails" to data.optStringOrNull("errorDetails")
+                    )
+                )
+            )
+            "onUIEvent" -> channel.invokeMethod(
+                "onUiEvent",
+                mapOf("uiEvent" to data.pick("name", "properties"))
+            )
+            "onCantFindItemClicked" -> channel.invokeMethod(
+                name,
+                mapOf("term" to data.optStringOrNull("search"))
+            )
+            "onClose", "onTokenExpired" -> channel.invokeMethod(name, null)
+        }
+    }
 
     private fun provideNewToken(call: MethodCall) {
         val token = call.argument<String>("newToken") ?:
             throw IllegalArgumentException("newToken argument must be set")
-        newTokenCallback?.invoke(token)
+        ArgyleWebLinkSession.current?.activity?.evaluateJavascript(
+            ArgyleWebLinkPage.tokenUpdateScript(token)
+        )
     }
 
     private fun close() {
-        ArgyleLink.close()
+        ArgyleWebLinkSession.current?.activity?.closeLink()
     }
+}
+
+private fun JSONObject.optStringOrNull(key: String): String? =
+    if (has(key) && !isNull(key)) optString(key) else null
+
+private fun JSONObject.pick(vararg keys: String): Map<String, Any?> =
+    keys.associateWith { if (has(it)) toPlainValue(get(it)) else null }
+
+private fun toPlainValue(value: Any?): Any? = when (value) {
+    JSONObject.NULL -> null
+    is JSONObject -> value.keys().asSequence().associateWith { toPlainValue(value.get(it)) }
+    is JSONArray -> (0 until value.length()).map { toPlainValue(value.get(it)) }
+    else -> value
 }

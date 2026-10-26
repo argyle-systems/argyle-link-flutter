@@ -1,17 +1,11 @@
 PODS:
-  - Argyle (5.15.2)
   - argyle_link_flutter (0.0.1):
-    - Argyle (= 5.15.2)
     - Flutter
   - Flutter (1.0.0)
 
 DEPENDENCIES:
   - argyle_link_flutter (from `.symlinks/plugins/argyle_link_flutter/ios`)
   - Flutter (from `Flutter`)
-
-SPEC REPOS:
-  trunk:
-    - Argyle
 
 EXTERNAL SOURCES:
   argyle_link_flutter:
@@ -20,10 +14,9 @@ EXTERNAL SOURCES:
     :path: Flutter
 
 SPEC CHECKSUMS:
-  Argyle: a1b09dea04d4276b3840fb1316874e3fabf1f84a
-  argyle_link_flutter: 3b6c7f276542dd759dc5e28e4007f825aa672465
+  argyle_link_flutter: a056a9a3b317a3a378d8ff27dc6169dd7314c21e
   Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
 
-PODFILE CHECKSUM: 775997f741c536251164e3eacf6e34abf2eb7a17
+PODFILE CHECKSUM: 57c8aed26fba39d3ec9424816221f294a07c58eb
 
 COCOAPODS: 1.16.2

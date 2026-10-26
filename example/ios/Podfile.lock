@@ -14,7 +14,7 @@ EXTERNAL SOURCES:
     :path: Flutter
 
 SPEC CHECKSUMS:
-  argyle_link_flutter: a056a9a3b317a3a378d8ff27dc6169dd7314c21e
+  argyle_link_flutter: f164288baf08886b8de48ad9f52cd7388885e328
   Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
 
 PODFILE CHECKSUM: 57c8aed26fba39d3ec9424816221f294a07c58eb

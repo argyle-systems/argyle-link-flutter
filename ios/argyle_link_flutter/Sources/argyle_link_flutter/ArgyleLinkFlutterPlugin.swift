@@ -1,14 +1,14 @@
 import Flutter
 import UIKit
 
-public class SwiftArgyleLinkFlutterPlugin: NSObject, FlutterPlugin {
+public class ArgyleLinkFlutterPlugin: NSObject, FlutterPlugin {
 
     private static var _channel: FlutterMethodChannel?
 
     private var webLinkController: ArgyleWebLinkViewController?
 
     private var channel: FlutterMethodChannel? {
-        SwiftArgyleLinkFlutterPlugin._channel
+        ArgyleLinkFlutterPlugin._channel
     }
 
     private var presentedController: UIViewController? {
@@ -26,9 +26,9 @@ public class SwiftArgyleLinkFlutterPlugin: NSObject, FlutterPlugin {
 
     public static func register(with registrar: FlutterPluginRegistrar) {
         let channel = FlutterMethodChannel(name: "argyle_link_flutter", binaryMessenger: registrar.messenger())
-        let instance = SwiftArgyleLinkFlutterPlugin()
+        let instance = ArgyleLinkFlutterPlugin()
         registrar.addMethodCallDelegate(instance, channel: channel)
-        SwiftArgyleLinkFlutterPlugin._channel = channel
+        ArgyleLinkFlutterPlugin._channel = channel
     }
 
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {

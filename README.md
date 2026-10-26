@@ -10,6 +10,7 @@ Link runs in a webview hosted by the plugin, loading the same web Link experienc
 
 - iOS 15.0+
 - Xcode 14.0+
+- Works with both CocoaPods and Swift Package Manager ([Flutter SPM support](https://docs.flutter.dev/packages-and-plugins/swift-package-manager/for-app-developers))
 
 **Requirements for Android:**
 

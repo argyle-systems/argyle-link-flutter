@@ -13,7 +13,7 @@ A new flutter plugin project.
   s.license          = { :file => '../LICENSE' }
   s.author           = { 'Your Company' => 'email@example.com' }
   s.source           = { :path => '.' }
-  s.source_files = 'Classes/**/*'
+  s.source_files = 'argyle_link_flutter/Sources/argyle_link_flutter/**/*'
   s.dependency 'Flutter'
   s.platform = :ios, '15.0'
   s.frameworks = 'WebKit', 'SafariServices'

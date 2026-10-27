@@ -2,13 +2,15 @@
 
 Argyle Link Flutter SDK provides a way to integrate [Argyle Link](https://argyle.com/docs/link/overview) into your Flutter app.
 
+Link runs in a webview hosted by the plugin, loading the same web Link experience as the Argyle native iOS and Android SDKs. The plugin has no native SDK dependencies.
+
 **Note:** We recommend you to lock your app to portrait orientation.
 
 **Requirements for iOS:**
 
-- iOS 14.0+
-- Xcode 14.0+
-- Swift 5.5+
+- iOS 15.0+
+- Xcode 15.0+
+- Works with both CocoaPods and Swift Package Manager ([Flutter SPM support](https://docs.flutter.dev/packages-and-plugins/swift-package-manager/for-app-developers))
 
 **Requirements for Android:**
 
@@ -24,6 +26,8 @@ android {
     ...
 }
 ```
+
+The plugin ships its own ProGuard/R8 rules, so no extra configuration is needed when minifying.
 
 ## 1. Add the SDK dependency
 

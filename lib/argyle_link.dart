@@ -118,7 +118,8 @@ class ArgyleLink {
   static LinkErrorType _parseLinkErrorType(String type) {
     final normalizedType = type.toLowerCase().replaceAll('_', '');
     return LinkErrorType.values
-        .firstWhere((element) => element.name.toLowerCase() == normalizedType);
+        .firstWhere((element) => element.name.toLowerCase() == normalizedType,
+            orElse: () => LinkErrorType.generic);
   }
 
   static UIEvent _parseUiEvent(MethodCall call) {

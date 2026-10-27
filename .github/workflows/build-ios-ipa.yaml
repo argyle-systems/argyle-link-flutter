@@ -8,7 +8,10 @@ jobs:
   build:
     runs-on: macos-latest
     steps:
+    # Flutter names the plugin's Swift package after the checkout directory, so it must match the plugin name.
     - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      with:
+        path: argyle_link_flutter
 
     - name: Import Codesigning Certificate
       uses: apple-actions/import-codesign-certs@253ddeeac23f2bdad1646faac5c8c2832e800071 # v1.0.4
@@ -31,12 +34,12 @@ jobs:
         channel: 'stable'
         architecture: x64
 
-    - run: pushd example; flutter pub get
+    - run: pushd argyle_link_flutter/example; flutter pub get
 
-    - run: pushd example; flutter build ipa --dart-define=IS_INTERNAL_JSON_BUILD=true --export-options-plist=./ios/exportOptions.plist
+    - run: pushd argyle_link_flutter/example; flutter build ipa --dart-define=IS_INTERNAL_JSON_BUILD=true --export-options-plist=./ios/exportOptions.plist
 
     - name: Archive IPA
       uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
       with:
         name: ipa-app-release
-        path: example/build/ios/ipa/argyle_link_flutter_example.ipa
+        path: argyle_link_flutter/example/build/ios/ipa/argyle_link_flutter_example.ipa
